@@ -1,12 +1,13 @@
 package br.ka.dto;
-public class ClienteUpdateDTO {
+import br.ka.model.Cliente;
+import br.ka.model.Cidade;
 
-    private String nomeEmpresa;
-    private String cnpj;
-    private String nomeCliente;
-    private String cpfCliente;
-    private Long cidadeId;
-    private String endereco;
-
-    // Getters e Setters
+public record ClienteUpdateDTO(
+        Long id,
+        String nomeEmpresa,
+        String cnpj,
+        String nomeCliente,
+        String cpfCliente,
+        CidadeDTO cidadeDTO,
+        String endereco) {
 }

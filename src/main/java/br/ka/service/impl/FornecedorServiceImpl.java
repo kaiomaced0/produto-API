@@ -1,5 +1,6 @@
 package br.ka.service.impl;
 
+import br.ka.model.EntityClass;
 import br.ka.service.FornecedorService;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -26,8 +27,8 @@ public class FornecedorServiceImpl implements FornecedorService {
     public List<FornecedorResponseDTO> getAll() {
         try {
             LOG.info("Requisição Fornecedor.getAll()");
-            return repository.listAll().stream()
-                    .map(fornecedor -> new FornecedorResponseDTO(fornecedor))
+            return repository.listAll().stream().filter(EntityClass::getAtivo)
+                    .map(FornecedorResponseDTO::new)
                     .collect(Collectors.toList());
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Fornecedor.getAll()");
@@ -40,7 +41,7 @@ public class FornecedorServiceImpl implements FornecedorService {
         try {
             LOG.info("Requisição Fornecedor.getId()");
             Fornecedor fornecedor = repository.findById(id);
-            if(fornecedor != null) {
+            if(fornecedor != null && fornecedor.getAtivo()) {
                 return Response.ok(new FornecedorResponseDTO(fornecedor)).build();
             }
             return Response.status(Response.Status.NOT_FOUND).build();
@@ -70,7 +71,10 @@ public class FornecedorServiceImpl implements FornecedorService {
         try {
             LOG.info("Requisição Fornecedor.update()");
             Fornecedor existingFornecedor = repository.findById(fornecedorUpdateDTO.id());
-            return Response.ok().build();
+            if(existingFornecedor.getAtivo()){
+                return Response.ok().build();
+            }
+            return Response.status(Response.Status.NOT_FOUND).build();
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Fornecedor.update()");
         return Response.status(Response.Status.NOT_FOUND).build();
@@ -82,7 +86,7 @@ public class FornecedorServiceImpl implements FornecedorService {
     public Response delete(Long id) {
         try {
             LOG.info("Requisição Fornecedor.delete()");
-            repository.deleteById(id);
+            repository.findById(id).setAtivo(false);
             return Response.ok().build();
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Fornecedor.delete()");

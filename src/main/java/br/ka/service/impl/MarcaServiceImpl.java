@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import br.ka.dto.MarcaUpdateDTO;
+import br.ka.model.EntityClass;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -27,8 +28,8 @@ public class MarcaServiceImpl implements MarcaService {
     public List<MarcaResponseDTO> getAll() {
         try {
             LOG.info("Requisição Marca.getAll()");
-            return repository.findAll().stream()
-                    .map(marca -> new MarcaResponseDTO(marca))
+            return repository.findAll().stream().filter(EntityClass::getAtivo)
+                    .map(MarcaResponseDTO::new)
                     .collect(Collectors.toList());
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Marca.getAll()");
@@ -41,7 +42,10 @@ public class MarcaServiceImpl implements MarcaService {
         try {
             LOG.info("Requisição Marca.getId()");
             Marca marca = repository.findById(id);
-            return Response.ok(new MarcaResponseDTO(marca)).build();
+            if(marca.getAtivo()){
+                return Response.ok(new MarcaResponseDTO(marca)).build();
+            }
+            return Response.status(Response.Status.NOT_FOUND).build();
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Marca.getId()");
             return Response.status(Response.Status.NOT_FOUND).build();
@@ -67,7 +71,7 @@ public class MarcaServiceImpl implements MarcaService {
     public Response delete(Long id) {
         try {
             LOG.info("Requisição Marca.delete()");
-            repository.deleteById(id);
+            repository.findById(id).setAtivo(false);
             return Response.ok().build();
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Marca.delete()");

@@ -1,14 +1,24 @@
 package br.ka.dto.responseDTO;
 
-public class ClienteResponseDTO {
+import br.ka.dto.responseDTO.CidadeResponseDTO;
+import br.ka.model.Cliente;
 
-    private Long id;
-    private String nomeEmpresa;
-    private String cnpj;
-    private String nomeCliente;
-    private String cpfCliente;
-    private CidadeResponseDTO cidade;
-    private String endereco;
-
-    // Getters e Setters
+public record ClienteResponseDTO(
+        Long id,
+        String nomeEmpresa,
+        String cnpj,
+        String nomeCliente,
+        String cpfCliente,
+        CidadeResponseDTO cidade,
+        String endereco
+) {
+    public ClienteResponseDTO(Cliente cliente) {
+        this(cliente.getId(),
+                cliente.getNomeEmpresa(),
+                cliente.getCnpj(),
+                cliente.getNomeCliente(),
+                cliente.getCpfCliente(),
+                new CidadeResponseDTO(cliente.getCidade()),
+                cliente.getEndereco());
+    }
 }

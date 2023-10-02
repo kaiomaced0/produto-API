@@ -1,5 +1,6 @@
 package br.ka.service.impl;
 import br.ka.dto.ProdutoUpdateDTO;
+import br.ka.model.EntityClass;
 import br.ka.service.ProdutoService;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -27,12 +28,13 @@ public class ProdutoServiceImpl implements ProdutoService {
     public List<ProdutoResponseDTO> getAll() {
         try {
             LOG.info("Requisição Produto.getAll()");
-            return repository.listAll().stream()
-                    .map(produto -> new ProdutoResponseDTO(produto))
+            return repository.listAll().stream().filter(EntityClass::getAtivo)
+                    .map(ProdutoResponseDTO::new)
                     .collect(Collectors.toList());
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Produto.getAll()", e);
             return null;
+
         }
     }
 
@@ -71,14 +73,12 @@ public class ProdutoServiceImpl implements ProdutoService {
     public Response delete(Long id) {
         try {
             LOG.info("Requisição Produto.delete()");
-            if (repository.deleteById(id)) {
-                return Response.ok().build();
-            } else {
-                return Response.status(Status.NOT_FOUND).build();
+            repository.findById(id).setAtivo(false);
+            return Response.ok().build();
             }
-        } catch (Exception e) {
+         catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Produto.delete()", e);
-            return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+             return Response.status(Status.NOT_FOUND).build();
         }
     }
 

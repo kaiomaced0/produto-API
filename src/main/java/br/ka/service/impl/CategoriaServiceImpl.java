@@ -1,5 +1,6 @@
 package br.ka.service.impl;
 
+import br.ka.model.EntityClass;
 import br.ka.service.CategoriaService;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -26,8 +27,8 @@ public class CategoriaServiceImpl implements CategoriaService {
     public List<CategoriaResponseDTO> getAll() {
         try {
             LOG.info("Requisição Categoria.getAll()");
-            return repository.listAll().stream()
-                    .map(categoria -> new CategoriaResponseDTO(categoria))
+            return repository.listAll().stream().filter(EntityClass::getAtivo)
+                    .map(CategoriaResponseDTO::new)
                     .collect(Collectors.toList());
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Categoria.getAll()");
@@ -40,7 +41,7 @@ public class CategoriaServiceImpl implements CategoriaService {
         try {
             LOG.info("Requisição Categoria.getId()");
             Categoria categoria = repository.findById(id);
-            if(categoria != null) {
+            if(categoria != null && categoria.getAtivo()) {
                 return Response.ok(new CategoriaResponseDTO(categoria)).build();
             }
             return Response.status(Response.Status.NOT_FOUND).build();
@@ -82,7 +83,7 @@ public class CategoriaServiceImpl implements CategoriaService {
     public Response delete(Long id) {
         try {
             LOG.info("Requisição Categoria.delete()");
-            repository.deleteById(id);
+            repository.findById(id).setAtivo(false);
             return Response.ok().build();
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Categoria.delete()");

@@ -44,7 +44,7 @@ public class CategoriaResource {
         return service.update(categoriaUpdateDTO);
     }
 
-    @DELETE
+    @PATCH
     @Path("/{id}")
     @PermitAll
     public Response delete(@PathParam("id") Long id) {
