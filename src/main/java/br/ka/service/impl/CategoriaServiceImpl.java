@@ -71,6 +71,7 @@ public class CategoriaServiceImpl implements CategoriaService {
         try {
             LOG.info("Requisição Categoria.update()");
             Categoria categoria = repository.findById(categoriaUpdateDTO.id());
+            categoria.setNome(categoriaUpdateDTO.nome());
             return Response.ok().build();
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Categoria.update()");

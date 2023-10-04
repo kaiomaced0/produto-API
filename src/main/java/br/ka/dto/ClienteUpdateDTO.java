@@ -6,6 +6,6 @@ public record ClienteUpdateDTO(
         String cnpj,
         String nomeCliente,
         String cpfCliente,
-        CidadeDTO cidadeDTO,
+        Long cidade,
         String endereco) {
 }

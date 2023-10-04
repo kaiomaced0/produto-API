@@ -82,8 +82,13 @@ public class MarcaServiceImpl implements MarcaService {
     public Response update(MarcaUpdateDTO marcaUpdateDTO) {
         try {
             LOG.info("Requisição Marca.update()");
-            Marca existingMarca = repository.findById(marcaUpdateDTO.id());
-            return Response.ok().build();
+            Marca marca = repository.findById(marcaUpdateDTO.id());
+            if(marca.getAtivo()){
+                marca.setNome(marcaUpdateDTO.nome());
+                return Response.ok().build();
+            }else{
+                throw new Exception();
+            }
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Marca.update()");
             return Response.status(Response.Status.NOT_FOUND).build();

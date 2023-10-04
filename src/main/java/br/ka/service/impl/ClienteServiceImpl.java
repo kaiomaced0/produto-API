@@ -8,10 +8,15 @@ import jakarta.ws.rs.core.Response;
 import org.jboss.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.List;
+
+import br.ka.repository.CidadeRepository;
 import br.ka.repository.ClienteRepository;
 import br.ka.model.Cliente;
 import br.ka.dto.ClienteDTO;
 import br.ka.dto.ClienteUpdateDTO;
+import br.ka.dto.ClienteUpdateDadosClienteDTO;
+import br.ka.dto.ClienteUpdateDadosEmpresaDTO;
+import br.ka.dto.ClienteUpdateEnderecoDTO;
 import br.ka.dto.responseDTO.ClienteResponseDTO;
 import jakarta.enterprise.context.ApplicationScoped;
 
@@ -22,6 +27,9 @@ public class ClienteServiceImpl implements ClienteService {
 
     @Inject
     ClienteRepository repository;
+
+    @Inject
+    CidadeRepository cidadeRepository;
 
     @Override
     public List<ClienteResponseDTO> getAll() {
@@ -70,13 +78,19 @@ public class ClienteServiceImpl implements ClienteService {
     public Response update(ClienteUpdateDTO clienteUpdateDTO) {
         try {
             LOG.info("Requisição Cliente.update()");
-            Cliente existingCliente = repository.findById(clienteUpdateDTO.id());
-            if (existingCliente != null && existingCliente.getAtivo()) {
-                // Atualize os campos necessários do existingCliente
-                // ...
-                return Response.ok().build();
+            Cliente cliente = repository.findById(clienteUpdateDTO.id());
+            if (cliente.getAtivo()) {
+                cliente.setCidade(cidadeRepository.findById(clienteUpdateDTO.cidade()));
+                cliente.setNomeCliente(clienteUpdateDTO.nomeCliente());
+                cliente.setNomeEmpresa(clienteUpdateDTO.nomeEmpresa());
+                cliente.setCnpj(clienteUpdateDTO.cnpj());
+                cliente.setCpfCliente(clienteUpdateDTO.cpfCliente());
+                cliente.setEndereco(clienteUpdateDTO.endereco());
+                return Response.ok(new ClienteResponseDTO(cliente)).build();
             }
-            return Response.status(Response.Status.NOT_FOUND).build();
+            else{
+                throw new Exception();
+            }
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Cliente.update()");
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
@@ -98,5 +112,64 @@ public class ClienteServiceImpl implements ClienteService {
             LOG.error("Erro ao rodar Requisição Cliente.delete()");
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
+    }
+
+    @Override
+    public Response updateDadosEmpresa(ClienteUpdateDadosEmpresaDTO clienteUpdateDadosEmpresaDTO) {
+        try {
+            LOG.info("Requisição Cliente.update()");
+            Cliente cliente = repository.findById(clienteUpdateDadosEmpresaDTO.id());
+            if (cliente.getAtivo()) {
+                cliente.setNomeEmpresa(clienteUpdateDadosEmpresaDTO.nomeEmpresa());
+                cliente.setCnpj(clienteUpdateDadosEmpresaDTO.cnpj());
+                return Response.ok(new ClienteResponseDTO(cliente)).build();
+            }
+            else{
+                throw new Exception();
+            }
+        } catch (Exception e) {
+            LOG.error("Erro ao rodar Requisição Cliente.update()");
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @Override
+    public Response updateDadosCliente(ClienteUpdateDadosClienteDTO clienteUpdateDadosClienteDTO) {
+        try {
+            LOG.info("Requisição Cliente.update()");
+            Cliente cliente = repository.findById(clienteUpdateDadosClienteDTO.id());
+            if (cliente.getAtivo()) {
+                cliente.setNomeCliente(clienteUpdateDadosClienteDTO.nomeCliente());
+                cliente.setCpfCliente(clienteUpdateDadosClienteDTO.cpfCliente());
+                return Response.ok(new ClienteResponseDTO(cliente)).build();
+            }
+            else{
+                throw new Exception();
+            }
+        } catch (Exception e) {
+            LOG.error("Erro ao rodar Requisição Cliente.update()");
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }    
+    }
+
+    @Override
+    public Response updateEndereco(ClienteUpdateEnderecoDTO clienteUpdateEnderecoDTO) {
+        
+        try {
+            LOG.info("Requisição Cliente.update()");
+            Cliente cliente = repository.findById(clienteUpdateEnderecoDTO.id());
+            if (cliente.getAtivo()) {
+                cliente.setCidade(cidadeRepository.findById(clienteUpdateEnderecoDTO.cidade()));
+                cliente.setEndereco(clienteUpdateEnderecoDTO.endereco());
+                return Response.ok(new ClienteResponseDTO(cliente)).build();
+            }
+            else{
+                throw new Exception();
+            }
+        } catch (Exception e) {
+            LOG.error("Erro ao rodar Requisição Cliente.update()");
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    
     }
 }
