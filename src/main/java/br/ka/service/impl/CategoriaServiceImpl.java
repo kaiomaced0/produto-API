@@ -70,7 +70,7 @@ public class CategoriaServiceImpl implements CategoriaService {
     public Response update(CategoriaUpdateDTO categoriaUpdateDTO) {
         try {
             LOG.info("Requisição Categoria.update()");
-            Categoria existingCategoria = repository.findById(categoriaUpdateDTO.id());
+            Categoria categoria = repository.findById(categoriaUpdateDTO.id());
             return Response.ok().build();
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Categoria.update()");

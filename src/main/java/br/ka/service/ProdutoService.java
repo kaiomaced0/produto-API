@@ -6,7 +6,6 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.core.Response;
 import java.util.List;
 import br.ka.dto.ProdutoDTO;
-import br.ka.dto.responseDTO.ProdutoResponseDTO;
 
 public interface ProdutoService {
 

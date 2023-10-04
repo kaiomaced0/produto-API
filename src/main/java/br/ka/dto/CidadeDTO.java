@@ -1,6 +1,5 @@
 package br.ka.dto;
 import br.ka.model.Cidade;
-import br.ka.model.Estado;
 
 public record CidadeDTO(
         String nome,

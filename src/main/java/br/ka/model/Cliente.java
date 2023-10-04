@@ -1,7 +1,5 @@
 package br.ka.model;
 
-import br.ka.model.Cidade;
-import br.ka.model.EntityClass;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;

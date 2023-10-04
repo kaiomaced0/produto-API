@@ -1,7 +1,5 @@
 package br.ka.model;
 
-import br.ka.model.EntityClass;
-import br.ka.model.Estado;
 import jakarta.persistence.*;
 
 @Entity

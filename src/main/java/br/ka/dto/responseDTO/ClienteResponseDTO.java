@@ -1,6 +1,5 @@
 package br.ka.dto.responseDTO;
 
-import br.ka.dto.responseDTO.CidadeResponseDTO;
 import br.ka.model.Cliente;
 
 public record ClienteResponseDTO(

@@ -1,9 +1,7 @@
 package br.ka.dto;
 
-import br.ka.dto.responseDTO.CategoriaResponseDTO;
 import br.ka.model.Fornecedor;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public record FornecedorDTO(
         String nome,

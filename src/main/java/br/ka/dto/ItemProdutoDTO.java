@@ -1,11 +1,16 @@
 package br.ka.dto;
 
-public class ItemProdutoDTO {
+import br.ka.model.ItemProduto;
 
-    private Long id;
-    private Long produtoId;
-    private Integer quantidade;
-    private Double preco;
+public record ItemProdutoDTO(
+        Long idProduto,
+        Integer quantidade,
+        Double preco) {
 
-    // Getters e Setters
+    public static ItemProduto criaItemProduto(ItemProdutoDTO itemProdutoDTO) {
+        ItemProduto itemProduto = new ItemProduto();
+        itemProduto.setQuantidade(itemProdutoDTO.quantidade());
+        itemProduto.setPreco(itemProdutoDTO.preco());
+        return itemProduto;
+    }
 }

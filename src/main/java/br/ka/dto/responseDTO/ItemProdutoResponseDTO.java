@@ -1,6 +1,5 @@
 package br.ka.dto.responseDTO;
 
-import br.ka.dto.responseDTO.ProdutoResponseDTO;
 import br.ka.model.ItemProduto;
 
 public record ItemProdutoResponseDTO(

@@ -44,7 +44,7 @@ public class MarcaResource {
         return service.update(marcaUpdateDTO);
     }
 
-    @DELETE
+    @PATCH
     @Path("/{id}")
     @PermitAll
     public Response delete(@PathParam("id") Long id) {

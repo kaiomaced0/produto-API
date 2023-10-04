@@ -1,6 +1,5 @@
 package br.ka.service.impl;
 
-import br.ka.converterjpa.EstadoConverter;
 import br.ka.model.EntityClass;
 import br.ka.model.Estado;
 import br.ka.service.CidadeService;

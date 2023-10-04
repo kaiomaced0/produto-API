@@ -1,10 +1,8 @@
 package br.ka.dto;
 
-public class ItemProdutoUpdateDTO {
 
-    private Long produtoId;
-    private Integer quantidade;
-    private Double preco;
-
-    // Getters e Setters
-}
+public record ItemProdutoUpdateDTO(
+        Long id,
+        Long  idproduto,
+        Integer quantidade,
+        Double preco) {}
