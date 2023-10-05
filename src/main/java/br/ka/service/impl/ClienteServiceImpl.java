@@ -49,13 +49,15 @@ public class ClienteServiceImpl implements ClienteService {
         try {
             LOG.info("Requisição Cliente.getId()");
             Cliente cliente = repository.findById(id);
-            if(cliente != null && cliente.getAtivo()) {
+            if(cliente.getAtivo()) {
                 return Response.ok(new ClienteResponseDTO(cliente)).build();
             }
-            return Response.status(Response.Status.NOT_FOUND).build();
+            else{
+                throw new Exception();
+            }
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Cliente.getId()");
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
     }
 
@@ -65,11 +67,12 @@ public class ClienteServiceImpl implements ClienteService {
         try {
             LOG.info("Requisição Cliente.insert()");
             Cliente cliente = ClienteDTO.criaCliente(clienteDTO);
+            cliente.setCidade(cidadeRepository.findById(clienteDTO.idCidade()));
             repository.persist(cliente);
             return Response.ok().build();
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Cliente.insert()");
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
     }
 
@@ -93,7 +96,7 @@ public class ClienteServiceImpl implements ClienteService {
             }
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Cliente.update()");
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
     }
 
@@ -107,10 +110,12 @@ public class ClienteServiceImpl implements ClienteService {
                 cliente.setAtivo(false);
                 return Response.ok().build();
             }
-            return Response.status(Response.Status.NOT_FOUND).build();
+            else{
+                throw new Exception();
+            }
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Cliente.delete()");
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
     }
 
@@ -129,7 +134,7 @@ public class ClienteServiceImpl implements ClienteService {
             }
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Cliente.update()");
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
     }
 
@@ -148,7 +153,7 @@ public class ClienteServiceImpl implements ClienteService {
             }
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Cliente.update()");
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            return Response.status(Response.Status.NOT_FOUND).build();
         }    
     }
 
@@ -168,7 +173,7 @@ public class ClienteServiceImpl implements ClienteService {
             }
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Cliente.update()");
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
     
     }

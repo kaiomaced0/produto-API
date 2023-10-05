@@ -8,7 +8,7 @@ import jakarta.persistence.ManyToOne;
 public class ItemProduto extends EntityClass {
 
     @ManyToOne
-    @JoinColumn(name = "produto_item_produto")
+    @JoinColumn(name = "produto_itemproduto")
     private Produto produto;
 
     private Integer quantidade;

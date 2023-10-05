@@ -41,13 +41,15 @@ public class FornecedorServiceImpl implements FornecedorService {
         try {
             LOG.info("Requisição Fornecedor.getId()");
             Fornecedor fornecedor = repository.findById(id);
-            if(fornecedor != null && fornecedor.getAtivo()) {
+            if(fornecedor.getAtivo()) {
                 return Response.ok(new FornecedorResponseDTO(fornecedor)).build();
             }
-            return Response.status(Response.Status.NOT_FOUND).build();
+            else{
+                throw new Exception();
+            }
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Fornecedor.getId()");
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
     }
 
@@ -74,10 +76,12 @@ public class FornecedorServiceImpl implements FornecedorService {
             if(existingFornecedor.getAtivo()){
                 return Response.ok().build();
             }
-            return Response.status(Response.Status.NOT_FOUND).build();
+            else{
+                throw new Exception();
+            }
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Fornecedor.update()");
-        return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
     }
 
@@ -90,7 +94,7 @@ public class FornecedorServiceImpl implements FornecedorService {
             return Response.ok().build();
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Fornecedor.delete()");
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
     }
 }

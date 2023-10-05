@@ -7,7 +7,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.ManyToMany;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -22,7 +22,7 @@ public class Fornecedor extends EntityClass {
     @Column(name = "cnpj")
     private String cnpj;
 
-    @OneToMany
+    @ManyToMany
     @JoinColumn(name = "lista_categorias_fornecedor")
     private List<Categoria> categorias;
 

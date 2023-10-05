@@ -43,13 +43,15 @@ public class CidadeServiceImpl implements CidadeService {
         try {
             LOG.info("Requisição Cidade.getId()");
             Cidade cidade = repository.findById(id);
-            if (cidade != null) {
+            if (cidade.getAtivo()) {
                 return Response.ok(new CidadeResponseDTO(cidade)).build();
             }
-            return Response.status(Response.Status.NOT_FOUND).build();
+            else{
+                throw new Exception();
+            }
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Cidade.getId()", e);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
     }
 
@@ -64,7 +66,7 @@ public class CidadeServiceImpl implements CidadeService {
             return Response.ok().build();
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Cidade.insert()", e);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
     }
 
@@ -79,10 +81,12 @@ public class CidadeServiceImpl implements CidadeService {
                 existingCidade.setEstado(Estado.valueOf(cidadeUpdateDTO.estadoId()));
                 return Response.ok().build();
             }
-            return Response.status(Response.Status.NOT_FOUND).build();
+            else{
+                throw new Exception();
+            }
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Cidade.update()", e);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
     }
 
@@ -96,10 +100,12 @@ public class CidadeServiceImpl implements CidadeService {
                 cidade.setAtivo(false);
                 return Response.ok().build();
             }
-            return Response.status(Response.Status.NOT_FOUND).build();
+            else{
+                throw new Exception();
+            }
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Cidade.delete()", e);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
     }
 }

@@ -41,13 +41,15 @@ public class CategoriaServiceImpl implements CategoriaService {
         try {
             LOG.info("Requisição Categoria.getId()");
             Categoria categoria = repository.findById(id);
-            if(categoria != null && categoria.getAtivo()) {
+            if(categoria.getAtivo()) {
                 return Response.ok(new CategoriaResponseDTO(categoria)).build();
             }
-            return Response.status(Response.Status.NOT_FOUND).build();
+            else{
+                throw new Exception();
+            }
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Categoria.getId()");
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
     }
 
@@ -61,7 +63,7 @@ public class CategoriaServiceImpl implements CategoriaService {
             return Response.ok().build();
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Categoria.insert()");
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
     }
 
@@ -88,7 +90,7 @@ public class CategoriaServiceImpl implements CategoriaService {
             return Response.ok().build();
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Categoria.delete()");
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
     }
 }

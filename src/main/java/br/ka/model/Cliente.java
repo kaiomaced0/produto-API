@@ -3,6 +3,7 @@ package br.ka.model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 @Entity
@@ -15,6 +16,7 @@ public class Cliente extends EntityClass {
     private String cpfCliente;
 
     @ManyToOne
+    @JoinColumn(name = "cidade_cliente")
     private Cidade cidade;
     private String endereco;
 

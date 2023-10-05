@@ -33,7 +33,7 @@ public class Produto extends EntityClass {
     private Integer estoqueMinimo;
 
     @ManyToOne
-    @JoinColumn(name = "marca_id")
+    @JoinColumn(name = "marca_produto")
     private Marca marca;
 
     @ManyToMany

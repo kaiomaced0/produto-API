@@ -38,7 +38,7 @@ public class MarcaResource {
         return service.insert(marcaDTO);
     }
 
-    @PUT
+    @PATCH
     @PermitAll
     public Response update(MarcaUpdateDTO marcaUpdateDTO) {
         return service.update(marcaUpdateDTO);

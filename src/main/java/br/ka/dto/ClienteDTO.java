@@ -6,7 +6,7 @@ public record ClienteDTO(
         String cnpj,
         String nomeCliente,
         String cpfCliente,
-        CidadeDTO cidadeDTO,
+        Long idCidade,
         String endereco) {
 
     public static Cliente criaCliente(ClienteDTO clienteDTO) {
@@ -15,7 +15,6 @@ public record ClienteDTO(
         cliente.setCnpj(clienteDTO.cnpj());
         cliente.setNomeCliente(clienteDTO.nomeCliente());
         cliente.setCpfCliente(clienteDTO.cpfCliente());
-        cliente.setCidade(CidadeDTO.criaCidade(clienteDTO.cidadeDTO()));
         cliente.setEndereco(clienteDTO.endereco());
         return cliente;
     }

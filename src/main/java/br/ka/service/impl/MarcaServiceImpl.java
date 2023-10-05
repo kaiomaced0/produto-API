@@ -45,7 +45,9 @@ public class MarcaServiceImpl implements MarcaService {
             if(marca.getAtivo()){
                 return Response.ok(new MarcaResponseDTO(marca)).build();
             }
-            return Response.status(Response.Status.NOT_FOUND).build();
+            else{
+                throw new Exception();
+            }
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Marca.getId()");
             return Response.status(Response.Status.NOT_FOUND).build();

@@ -8,6 +8,7 @@ import org.jboss.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.List;
 import br.ka.repository.ItemProdutoRepository;
+import br.ka.repository.ProdutoRepository;
 import br.ka.model.ItemProduto;
 import br.ka.dto.ItemProdutoDTO;
 import br.ka.dto.ItemProdutoUpdateDTO;
@@ -21,6 +22,8 @@ public class ItemProdutoServiceImpl implements ItemProdutoService {
 
     @Inject
     ItemProdutoRepository repository;
+    @Inject
+    ProdutoRepository produtoRepository;
 
     @Override
     public List<ItemProdutoResponseDTO> getAll() {
@@ -32,7 +35,7 @@ public class ItemProdutoServiceImpl implements ItemProdutoService {
     @Override
     public Response getId(Long id) {
         ItemProduto item = repository.findById(id);
-        if (item != null && item.getAtivo()) {
+        if (item.getAtivo()) {
             return Response.ok().build();
         } else {
             return Response.status(Response.Status.NOT_FOUND).build();
@@ -42,29 +45,42 @@ public class ItemProdutoServiceImpl implements ItemProdutoService {
     @Override
     @Transactional
     public Response insert(ItemProdutoDTO itemProdutoDTO) {
-        ItemProduto item = ItemProdutoDTO.criaItemProduto(itemProdutoDTO);
-        repository.persist(item);
-        return Response.ok(item).build();
-    }
-
-    @Override
-    @Transactional
-    public Response delete(Long id) {
-        ItemProduto item = repository.findById(id);
-        if (item != null) {
-            item.setAtivo(false);
-            return Response.ok().build();
-        } else {
+        try {
+            ItemProduto item = ItemProdutoDTO.criaItemProduto(itemProdutoDTO);
+            item.setProduto(produtoRepository.findById(itemProdutoDTO.idProduto()));
+            item.setPreco(item.getProduto().getValorVenda() * item.getQuantidade());
+            repository.persist(item);
+            return Response.ok(item).build();
+        } catch (Exception e) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
     }
 
     @Override
     @Transactional
+    public Response delete(Long id) {
+        try {
+            ItemProduto item = repository.findById(id);
+        if (item.getAtivo()) {
+            item.setAtivo(false);
+            return Response.ok().build();
+        } else {
+            throw new Exception();
+        }
+        } catch (Exception e) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        
+    }
+
+    @Override
+    @Transactional
     public Response update(ItemProdutoUpdateDTO itemProdutoUpdateDTO) {
         ItemProduto item = repository.findById(itemProdutoUpdateDTO.id());
-        if (item != null) {
-            repository.persist(item);
+        if (item.getAtivo()) {
+            item.setProduto(produtoRepository.findById(itemProdutoUpdateDTO.idproduto()));
+            item.setQuantidade(itemProdutoUpdateDTO.quantidade());
+            item.setPreco(item.getQuantidade() * item.getProduto().getValorVenda());
             return Response.ok(item).build();
         } else {
             return Response.status(Response.Status.NOT_FOUND).build();
