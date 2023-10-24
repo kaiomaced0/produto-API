@@ -125,4 +125,35 @@ INSERT INTO fornecedor_categoria
 (7, 7),
 (8, 8),
 (9, 9),
-(10, 10),;
+(10, 10);
+
+INSERT INTO marca
+(id, ativo, nome) VALUES
+(1, true, 'Marca 1'),
+(2, true, 'Marca 2'),
+(3, true, 'Marca 3'),
+(4, true, 'Marca 4'),
+(5, true, 'Marca 5'),
+(6, true, 'Marca 6'),
+(7, true, 'Marca 7'),
+(8, true, 'Marca 8'),
+(9, true, 'Marca 9'),
+(10, true, 'Marca 10');
+
+INSERT INTO produto(
+	ativo, estoque, estoque_minimo, valor_compra, valor_venda, datainclusao, fornecedor_id, id, marca_produto, descricao, nome)
+VALUES
+(true, 100, 10, 10.00, 20.00, '2023-01-01', 1, 1, 1, 'Produto 1 - Descrição', 'Produto 1'),
+(true, 100, 10, 15.00, 25.00, '2023-01-01', 1, 2, 2, 'Produto 2 - Descrição', 'Produto 2'),
+(true, 100, 10, 20.00, 30.00, '2023-01-01', 2, 3, 3, 'Produto 3 - Descrição', 'Produto 3');
+
+INSERT INTO produto_categoria(produto_id, categorias_id) VALUES
+(1, 1),
+(1, 2),
+(1, 3),
+(2, 1),
+(2, 2),
+(2, 3),
+(3, 1),
+(3, 2),
+(3, 3);
