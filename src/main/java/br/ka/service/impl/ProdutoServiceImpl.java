@@ -9,6 +9,7 @@ import jakarta.ws.rs.core.Response.Status;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.jboss.logging.Logger;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 import br.ka.dto.ProdutoDTO;
@@ -74,7 +75,7 @@ public class ProdutoServiceImpl implements ProdutoService {
             produtoDTO.idCategoria().forEach(categoria -> produto.getCategorias().add(categoriaRepository.findById(categoria)));
                 
             repository.persist(produto);
-            return Response.ok().build();
+            return Response.ok(new ProdutoResponseDTO(produto)).build();
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Produto.insert()", e);
             return Response.status(Status.NOT_FOUND).build();
@@ -109,8 +110,8 @@ public class ProdutoServiceImpl implements ProdutoService {
                 produto.setEstoqueMinimo(produtoDTO.estoqueMinimo());
                 produto.setFornecedor(fornecedorRepository.findById(produtoDTO.idFornecedor()));
                 produto.setMarca(marcaRepository.findById(produtoDTO.idMarca()));
-                produto.setValorCompra(produtoDTO.valorCompra());
-                produto.setValorVenda(produtoDTO.valorVenda());
+                produto.setCusto(produtoDTO.custo());
+                produto.setValor(produtoDTO.valor());
                 produtoDTO.idCategoria().forEach(categoria -> produto.getCategorias().add(categoriaRepository.findById(categoria)));
                 return Response.ok().build();
             } else {

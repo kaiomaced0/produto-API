@@ -71,7 +71,7 @@ public class VendaServiceImpl implements VendaService {
             venda.setObservacao(vendaDTO.observacao());
             venda.getItemProdutos().forEach(v -> venda.setValorTotal(venda.getValorTotal() + v.getPreco()));
             repository.persist(venda);
-            return Response.ok().build();
+            return Response.ok(new VendaResponseDTO(venda)).build();
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Venda.insert()");
             return Response.status(Response.Status.NOT_FOUND).build();

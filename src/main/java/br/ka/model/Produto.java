@@ -1,6 +1,7 @@
 package br.ka.model;
 
 import java.util.List;
+import java.util.Set;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
@@ -20,10 +21,10 @@ public class Produto extends EntityClass {
     private Integer estoque;
 
     @Column(name = "valor_compra")
-    private double valorCompra;
+    private Double custo;
 
     @Column(name = "valor_venda")
-    private double valorVenda;
+    private Double valor;
 
     @ManyToOne
     @JoinColumn(name = "fornecedor_id")
@@ -38,9 +39,8 @@ public class Produto extends EntityClass {
 
     @ManyToMany
     @JoinColumn(name = "lista_categorias_produto")
-    private List<Categoria> categorias;
+    private Set<Categoria> categorias;
 
-    // getters and setters
     public String getNome() {
         return nome;
     }
@@ -65,28 +65,24 @@ public class Produto extends EntityClass {
         this.estoque = estoque;
     }
 
-    public double getValorCompra() {
-        return valorCompra;
+    public Double getCusto() {
+        return custo;
     }
 
-    public void setValorCompra(double valorCompra) {
-        this.valorCompra = valorCompra;
+    public void setCusto(Double custo) {
+        this.custo = custo;
     }
 
-    public double getValorVenda() {
-        return valorVenda;
+    public Double getValor() {
+        return valor;
     }
 
-    public void setValorVenda(double valorVenda) {
-        this.valorVenda = valorVenda;
+    public void setValor(Double valor) {
+        this.valor = valor;
     }
 
     public Fornecedor getFornecedor() {
-
-        if(this.fornecedor == null){
-            fornecedor = new Fornecedor();
-        }
-            return fornecedor;
+        return fornecedor;
     }
 
     public void setFornecedor(Fornecedor fornecedor) {
@@ -102,10 +98,6 @@ public class Produto extends EntityClass {
     }
 
     public Marca getMarca() {
-        if(this.marca == null){
-            marca = new Marca();
-        }
-
         return marca;
     }
 
@@ -113,11 +105,11 @@ public class Produto extends EntityClass {
         this.marca = marca;
     }
 
-    public List<Categoria> getCategorias() {
+    public Set<Categoria> getCategorias() {
         return categorias;
     }
 
-    public void setCategorias(List<Categoria> categorias) {
+    public void setCategorias(Set<Categoria> categorias) {
         this.categorias = categorias;
     }
 }

@@ -10,7 +10,7 @@ public record ProdutoResponseDTO(
         String nome,
         String descricao,
         Integer estoque,
-        double valorVenda,
+        Double valor,
         Long idFornecedor,
         Long idMarca,
         List<CategoriaResponseDTO> categorias) {
@@ -20,7 +20,7 @@ public record ProdutoResponseDTO(
                 produto.getNome(),
                 produto.getDescricao(),
                 produto.getEstoque(),
-                produto.getValorVenda(),
+                produto.getValor(),
                 produto.getFornecedor().getId(),
                 produto.getMarca().getId(),
                 // A implementação abaixo assume que você tem um método ou uma maneira de obter uma lista de CategoriaResponseDTO a partir de uma lista de Categoria.

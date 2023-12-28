@@ -1,13 +1,9 @@
 package br.ka.model;
 
 import java.util.List;
+import java.util.Set;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.*;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -22,9 +18,9 @@ public class Fornecedor extends EntityClass {
     @Column(name = "cnpj")
     private String cnpj;
 
-    @ManyToMany
-    @JoinColumn(name = "lista_categorias_fornecedor")
-    private List<Categoria> categorias;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = "fornecedor_categoria")
+    private Set<Categoria> categorias;
 
     // getters and setters
     public String getNome() {
@@ -51,11 +47,11 @@ public class Fornecedor extends EntityClass {
         this.cnpj = cnpj;
     }
 
-    public List<Categoria> getCategorias() {
+    public Set<Categoria> getCategorias() {
         return categorias;
     }
 
-    public void setCategorias(List<Categoria> categorias) {
+    public void setCategorias(Set<Categoria> categorias) {
         this.categorias = categorias;
     }
 }

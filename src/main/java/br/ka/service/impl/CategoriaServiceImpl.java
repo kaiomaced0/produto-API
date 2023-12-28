@@ -60,7 +60,7 @@ public class CategoriaServiceImpl implements CategoriaService {
             LOG.info("Requisição Categoria.insert()");
             Categoria categoria = CategoriaDTO.criaCategoria(categoriaDTO);
             repository.persist(categoria);
-            return Response.ok().build();
+            return Response.ok(new CategoriaResponseDTO(categoria)).build();
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Categoria.insert()");
             return Response.status(Response.Status.NOT_FOUND).build();

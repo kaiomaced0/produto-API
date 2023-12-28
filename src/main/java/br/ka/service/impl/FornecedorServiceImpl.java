@@ -60,7 +60,7 @@ public class FornecedorServiceImpl implements FornecedorService {
             LOG.info("Requisição Fornecedor.insert()");
             Fornecedor fornecedor =  FornecedorDTO.criaFornecedor(fornecedorDTO);
             repository.persist(fornecedor);
-            return Response.ok().build();
+            return Response.ok(new FornecedorResponseDTO(fornecedor)).build();
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Fornecedor.insert()");
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
@@ -69,11 +69,12 @@ public class FornecedorServiceImpl implements FornecedorService {
 
     @Override
     @Transactional
-    public Response update(FornecedorUpdateDTO fornecedorUpdateDTO) {
+    public Response update(FornecedorUpdateDTO dto) {
         try {
             LOG.info("Requisição Fornecedor.update()");
-            Fornecedor existingFornecedor = repository.findById(fornecedorUpdateDTO.id());
-            if(existingFornecedor.getAtivo()){
+            Fornecedor fornecedor = repository.findById(dto.id());
+            if(fornecedor.getAtivo()){
+
                 return Response.ok().build();
             }
             else{

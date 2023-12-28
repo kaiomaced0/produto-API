@@ -48,9 +48,9 @@ public class ItemProdutoServiceImpl implements ItemProdutoService {
         try {
             ItemProduto item = ItemProdutoDTO.criaItemProduto(itemProdutoDTO);
             item.setProduto(produtoRepository.findById(itemProdutoDTO.idProduto()));
-            item.setPreco(item.getProduto().getValorVenda() * item.getQuantidade());
+            item.setPreco(item.getProduto().getValor() * item.getQuantidade());
             repository.persist(item);
-            return Response.ok(item).build();
+            return Response.ok(new ItemProdutoResponseDTO(item)).build();
         } catch (Exception e) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
@@ -80,7 +80,7 @@ public class ItemProdutoServiceImpl implements ItemProdutoService {
         if (item.getAtivo()) {
             item.setProduto(produtoRepository.findById(itemProdutoUpdateDTO.idproduto()));
             item.setQuantidade(itemProdutoUpdateDTO.quantidade());
-            item.setPreco(item.getQuantidade() * item.getProduto().getValorVenda());
+            item.setPreco(item.getQuantidade() * item.getProduto().getValor());
             return Response.ok(item).build();
         } else {
             return Response.status(Response.Status.NOT_FOUND).build();

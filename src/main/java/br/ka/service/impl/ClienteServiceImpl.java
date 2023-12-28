@@ -69,7 +69,7 @@ public class ClienteServiceImpl implements ClienteService {
             Cliente cliente = ClienteDTO.criaCliente(clienteDTO);
             cliente.setCidade(cidadeRepository.findById(clienteDTO.idCidade()));
             repository.persist(cliente);
-            return Response.ok().build();
+            return Response.ok(new ClienteResponseDTO(cliente)).build();
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Cliente.insert()");
             return Response.status(Response.Status.NOT_FOUND).build();

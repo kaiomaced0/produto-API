@@ -63,7 +63,7 @@ public class CidadeServiceImpl implements CidadeService {
             Cidade cidade = CidadeDTO.criaCidade(cidadeDTO);
             cidade.setEstado(Estado.valueOf(cidadeDTO.estado()));
             repository.persist(cidade);
-            return Response.ok().build();
+            return Response.ok(new CidadeResponseDTO(cidade)).build();
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Cidade.insert()", e);
             return Response.status(Response.Status.NOT_FOUND).build();

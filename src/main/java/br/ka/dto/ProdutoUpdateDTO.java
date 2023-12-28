@@ -6,11 +6,11 @@ public record ProdutoUpdateDTO(
         Long id,
         String nome,
         String descricao,
-        int estoque,
-        double valorCompra,
-        double valorVenda,
+        Integer estoque,
+        Double custo,
+        Double valor,
         Long idFornecedor,
-        int estoqueMinimo,
+        Integer estoqueMinimo,
         Long idMarca,
         List<Long> idCategoria
 ) {}

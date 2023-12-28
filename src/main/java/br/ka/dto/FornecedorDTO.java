@@ -1,6 +1,8 @@
 package br.ka.dto;
 
 import br.ka.model.Fornecedor;
+
+import java.util.HashSet;
 import java.util.List;
 
 public record FornecedorDTO(
@@ -14,6 +16,7 @@ public record FornecedorDTO(
         fornecedor.setNome(fornecedorDTO.nome());
         fornecedor.setDescricao(fornecedorDTO.descricao());
         fornecedor.setCnpj(fornecedorDTO.cnpj());
+        fornecedor.setCategorias(new HashSet<>());
 
         return fornecedor;
     }

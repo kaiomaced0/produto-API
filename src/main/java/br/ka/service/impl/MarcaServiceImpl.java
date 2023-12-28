@@ -61,7 +61,7 @@ public class MarcaServiceImpl implements MarcaService {
             LOG.info("Requisição Marca.insert()");
             Marca marca = MarcaDTO.criaMarca(marcaDTO);
             repository.persist(marca);
-            return Response.ok().build();
+            return Response.ok(new MarcaResponseDTO(marca)).build();
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Marca.insert()");
             return Response.status(Response.Status.NOT_FOUND).build();
