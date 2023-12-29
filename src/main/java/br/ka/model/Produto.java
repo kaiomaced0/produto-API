@@ -41,6 +41,18 @@ public class Produto extends EntityClass {
     @JoinColumn(name = "lista_categorias_produto")
     private Set<Categoria> categorias;
 
+    @ManyToOne
+    @JoinColumn(name = "empresa")
+    private Empresa empresa;
+
+    public Empresa getEmpresa() {
+        return empresa;
+    }
+
+    public void setEmpresa(Empresa empresa) {
+        this.empresa = empresa;
+    }
+
     public String getNome() {
         return nome;
     }

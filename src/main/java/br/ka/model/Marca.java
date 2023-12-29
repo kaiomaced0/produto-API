@@ -1,10 +1,6 @@
 package br.ka.model;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
+
 import java.util.List;
 
 @Entity
@@ -17,6 +13,18 @@ public class Marca extends EntityClass {
     @OneToMany
     @JoinColumn(name = "lista_fornecedores_marca")
     private List<Fornecedor> fornecedores;
+
+    @ManyToOne
+    @JoinColumn(name = "empresa")
+    private Empresa empresa;
+
+    public Empresa getEmpresa() {
+        return empresa;
+    }
+
+    public void setEmpresa(Empresa empresa) {
+        this.empresa = empresa;
+    }
 
     // getters and setters
     public String getNome() {

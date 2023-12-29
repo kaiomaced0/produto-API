@@ -13,6 +13,28 @@ public class Notificacao extends EntityClass{
     @Enumerated(EnumType.ORDINAL)
     private TipoNotificacao tipoNotificacao;
 
+    private Boolean lida;
+
+    @ManyToOne
+    @JoinColumn(name = "empresa")
+    private Empresa empresa;
+
+    public Boolean getLida() {
+        return lida;
+    }
+
+    public void setLida(Boolean lida) {
+        this.lida = lida;
+    }
+
+    public Empresa getEmpresa() {
+        return empresa;
+    }
+
+    public void setEmpresa(Empresa empresa) {
+        this.empresa = empresa;
+    }
+
     public String getTitulo() {
         return titulo;
     }

@@ -61,6 +61,7 @@ public class ItemProdutoServiceImpl implements ItemProdutoService {
     public Response delete(Long id) {
         try {
             ItemProduto item = repository.findById(id);
+
         if (item.getAtivo()) {
             item.setAtivo(false);
             return Response.ok().build();

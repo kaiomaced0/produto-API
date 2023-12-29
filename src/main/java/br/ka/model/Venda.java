@@ -21,6 +21,18 @@ public class Venda extends EntityClass {
     private String observacao;
     private Double valorTotal;
 
+    @ManyToOne
+    @JoinColumn(name = "empresa")
+    private Empresa empresa;
+
+    public Empresa getEmpresa() {
+        return empresa;
+    }
+
+    public void setEmpresa(Empresa empresa) {
+        this.empresa = empresa;
+    }
+
     public List<ItemProduto> getItemProdutos() {
         return itemProdutos;
     }

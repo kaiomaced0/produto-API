@@ -3,7 +3,7 @@ import br.ka.model.Notificacao;
 
 public record NotificacaoUpdateDTO(
         Long id,
-        String titulo) {
+        String titulo, String descricao, Long tipoNotificacao) {
 
 
 }

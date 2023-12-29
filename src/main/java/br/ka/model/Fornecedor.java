@@ -22,7 +22,18 @@ public class Fornecedor extends EntityClass {
     @JoinColumn(name = "fornecedor_categoria")
     private Set<Categoria> categorias;
 
-    // getters and setters
+    @ManyToOne
+    @JoinColumn(name = "empresa")
+    private Empresa empresa;
+
+    public Empresa getEmpresa() {
+        return empresa;
+    }
+
+    public void setEmpresa(Empresa empresa) {
+        this.empresa = empresa;
+    }
+
     public String getNome() {
         return nome;
     }

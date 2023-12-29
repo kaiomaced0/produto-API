@@ -1,12 +1,14 @@
 package br.ka.service.impl;
 import br.ka.dto.ProdutoUpdateDTO;
-import br.ka.model.EntityClass;
+import br.ka.model.*;
+import br.ka.repository.*;
 import br.ka.service.ProdutoService;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 import jakarta.enterprise.context.ApplicationScoped;
+import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.jboss.logging.Logger;
 
 import java.util.HashSet;
@@ -14,11 +16,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import br.ka.dto.ProdutoDTO;
 import br.ka.dto.responseDTO.ProdutoResponseDTO;
-import br.ka.model.Produto;
-import br.ka.repository.CategoriaRepository;
-import br.ka.repository.FornecedorRepository;
-import br.ka.repository.MarcaRepository;
-import br.ka.repository.ProdutoRepository;
 
 @ApplicationScoped
 public class ProdutoServiceImpl implements ProdutoService {
@@ -34,11 +31,21 @@ public class ProdutoServiceImpl implements ProdutoService {
     @Inject
     CategoriaRepository categoriaRepository;
 
+    @Inject
+    NotificacaoRepository notificacaoRepository;
+
+    @Inject
+    JsonWebToken jsonWebToken;
+
+    @Inject
+    UsuarioRepository usuarioRepository;
+
     @Override
     public List<ProdutoResponseDTO> getAll() {
+        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
         try {
             LOG.info("Requisição Produto.getAll()");
-            return repository.listAll().stream().filter(EntityClass::getAtivo)
+            return repository.listAll().stream().filter(p -> p.getEmpresa() == u.getEmpresa()).filter(EntityClass::getAtivo)
                     .map(ProdutoResponseDTO::new)
                     .collect(Collectors.toList());
         } catch (Exception e) {
@@ -50,10 +57,11 @@ public class ProdutoServiceImpl implements ProdutoService {
 
     @Override
     public Response getId(Long id) {
+        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
         try {
             LOG.info("Requisição Produto.getId()");
             Produto produto = repository.findById(id);
-            if (produto.getAtivo()) {
+            if (produto.getAtivo() && produto.getEmpresa() == u.getEmpresa()) {
                 return Response.ok(new ProdutoResponseDTO(produto)).build();
             } else {
                 throw new Exception();
@@ -67,14 +75,22 @@ public class ProdutoServiceImpl implements ProdutoService {
     @Override
     @Transactional
     public Response insert(ProdutoDTO produtoDTO) {
+        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
         try {
             LOG.info("Requisição Produto.insert()");
             Produto produto = ProdutoDTO.criaProduto(produtoDTO);
             produto.setFornecedor(fornecedorRepository.findById(produtoDTO.idFornecedor()));
             produto.setMarca(marcaRepository.findById(produtoDTO.idMarca()));
+            produto.setEmpresa(u.getEmpresa());
             produtoDTO.idCategoria().forEach(categoria -> produto.getCategorias().add(categoriaRepository.findById(categoria)));
                 
             repository.persist(produto);
+            Notificacao notificacao = new Notificacao();
+            notificacao.setTitulo("Produto adicionado");
+            notificacao.setTipoNotificacao(TipoNotificacao.SUCESSO);
+            notificacao.setDescricao("Produto " + produto.getNome()+" criado com sucesso!");
+            notificacao.setEmpresa(u.getEmpresa());
+            notificacaoRepository.persist(notificacao);
             return Response.ok(new ProdutoResponseDTO(produto)).build();
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Produto.insert()", e);
@@ -85,9 +101,15 @@ public class ProdutoServiceImpl implements ProdutoService {
     @Override
     @Transactional
     public Response delete(Long id) {
+        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
         try {
             LOG.info("Requisição Produto.delete()");
-            repository.findById(id).setAtivo(false);
+            Produto p =  new Produto();
+            p = repository.findById(id);
+            if(p.getEmpresa() != u.getEmpresa()){
+                throw new Exception();
+            }
+            p.setAtivo(false);
             return Response.ok().build();
             }
          catch (Exception e) {
@@ -99,11 +121,12 @@ public class ProdutoServiceImpl implements ProdutoService {
     @Override
     @Transactional
     public Response update(ProdutoUpdateDTO produtoDTO) {
+        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
         try {
             LOG.info("Requisição Produto.update()");
             Produto produto = repository.findById(produtoDTO.id());
 
-            if (produto.getAtivo()) {
+            if (produto.getAtivo() && produto.getEmpresa() == u.getEmpresa()) {
                 produto.setNome(produtoDTO.nome());
                 produto.setDescricao(produtoDTO.descricao());
                 produto.setEstoque(produtoDTO.estoque());

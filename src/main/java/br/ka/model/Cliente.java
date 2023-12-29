@@ -20,6 +20,18 @@ public class Cliente extends EntityClass {
     private Cidade cidade;
     private String endereco;
 
+    @ManyToOne
+    @JoinColumn(name = "empresa")
+    private Empresa empresa;
+
+    public Empresa getEmpresa() {
+        return empresa;
+    }
+
+    public void setEmpresa(Empresa empresa) {
+        this.empresa = empresa;
+    }
+
     public String getNomeEmpresa() {
         return nomeEmpresa;
     }

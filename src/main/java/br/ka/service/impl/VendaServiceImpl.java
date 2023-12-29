@@ -2,6 +2,8 @@ package br.ka.service.impl;
 
 import br.ka.model.EntityClass;
 import br.ka.model.ItemProduto;
+import br.ka.model.Usuario;
+import br.ka.repository.*;
 import br.ka.service.VendaService;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -11,11 +13,10 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.stream.Collectors;
 import java.util.List;
+
+import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.jboss.logging.Logger;
 
-import br.ka.repository.ClienteRepository;
-import br.ka.repository.ItemProdutoRepository;
-import br.ka.repository.VendaRepository;
 import br.ka.model.Venda;
 import br.ka.dto.VendaDTO;
 import br.ka.dto.VendaUpdateDTO;
@@ -34,11 +35,21 @@ public class VendaServiceImpl implements VendaService {
     @Inject
     ItemProdutoRepository itemProdutoRepository;
 
+    @Inject
+    NotificacaoRepository notificacaoRepository;
+
+    @Inject
+    JsonWebToken jsonWebToken;
+
+    @Inject
+    UsuarioRepository usuarioRepository;
+
     @Override
     public List<VendaResponseDTO> getAll() {
+        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
         try {
             LOG.info("Requisição Venda.getAll()");
-            return repository.listAll().stream().filter(EntityClass::getAtivo)
+            return repository.listAll().stream().filter(v -> v.getEmpresa() == u.getEmpresa()).filter(EntityClass::getAtivo)
                     .map(VendaResponseDTO::new)
                     .collect(Collectors.toList());
         } catch (Exception e) {

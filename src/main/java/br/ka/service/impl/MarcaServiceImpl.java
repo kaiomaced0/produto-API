@@ -5,10 +5,14 @@ import java.util.stream.Collectors;
 
 import br.ka.dto.MarcaUpdateDTO;
 import br.ka.model.EntityClass;
+import br.ka.model.Usuario;
+import br.ka.repository.NotificacaoRepository;
+import br.ka.repository.UsuarioRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.core.Response;
+import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.jboss.logging.Logger;
 import br.ka.repository.MarcaRepository;
 import br.ka.model.Marca;
@@ -23,12 +27,21 @@ public class MarcaServiceImpl implements MarcaService {
 
     @Inject
     MarcaRepository repository;
+    @Inject
+    NotificacaoRepository notificacaoRepository;
+
+    @Inject
+    JsonWebToken jsonWebToken;
+
+    @Inject
+    UsuarioRepository usuarioRepository;
 
     @Override
     public List<MarcaResponseDTO> getAll() {
+        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
         try {
             LOG.info("Requisição Marca.getAll()");
-            return repository.findAll().stream().filter(EntityClass::getAtivo)
+            return repository.findAll().stream().filter(m -> m.getEmpresa() == u.getEmpresa()).filter(EntityClass::getAtivo)
                     .map(MarcaResponseDTO::new)
                     .collect(Collectors.toList());
         } catch (Exception e) {
@@ -39,10 +52,11 @@ public class MarcaServiceImpl implements MarcaService {
 
     @Override
     public Response getId(Long id) {
+        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
         try {
             LOG.info("Requisição Marca.getId()");
             Marca marca = repository.findById(id);
-            if(marca.getAtivo()){
+            if(marca.getAtivo() && u.getEmpresa() == marca.getEmpresa()){
                 return Response.ok(new MarcaResponseDTO(marca)).build();
             }
             else{
@@ -57,9 +71,11 @@ public class MarcaServiceImpl implements MarcaService {
     @Override
     @Transactional
     public Response insert(MarcaDTO marcaDTO) {
+        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
         try {
             LOG.info("Requisição Marca.insert()");
             Marca marca = MarcaDTO.criaMarca(marcaDTO);
+            marca.setEmpresa(u.getEmpresa());
             repository.persist(marca);
             return Response.ok(new MarcaResponseDTO(marca)).build();
         } catch (Exception e) {
@@ -71,9 +87,15 @@ public class MarcaServiceImpl implements MarcaService {
     @Override
     @Transactional
     public Response delete(Long id) {
+        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
         try {
             LOG.info("Requisição Marca.delete()");
-            repository.findById(id).setAtivo(false);
+            Marca marca = new Marca();
+            marca = repository.findById(id);
+            if(marca.getEmpresa() != u.getEmpresa()){
+                throw new Exception();
+            }
+            marca.setAtivo(false);
             return Response.ok().build();
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Marca.delete()");
@@ -82,10 +104,11 @@ public class MarcaServiceImpl implements MarcaService {
     }
     @Override
     public Response update(MarcaUpdateDTO marcaUpdateDTO) {
+        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
         try {
             LOG.info("Requisição Marca.update()");
             Marca marca = repository.findById(marcaUpdateDTO.id());
-            if(marca.getAtivo()){
+            if(marca.getAtivo()&& marca.getEmpresa() == u.getEmpresa()){
                 marca.setNome(marcaUpdateDTO.nome());
                 return Response.ok().build();
             }else{
