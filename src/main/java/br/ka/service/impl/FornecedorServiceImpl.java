@@ -1,6 +1,7 @@
 package br.ka.service.impl;
 
 import br.ka.model.EntityClass;
+import br.ka.repository.CategoriaRepository;
 import br.ka.service.FornecedorService;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -22,6 +23,9 @@ public class FornecedorServiceImpl implements FornecedorService {
 
     @Inject
     FornecedorRepository repository;
+
+    @Inject
+    CategoriaRepository categoriaRepository;
 
     @Override
     public List<FornecedorResponseDTO> getAll() {
@@ -59,6 +63,7 @@ public class FornecedorServiceImpl implements FornecedorService {
         try {
             LOG.info("Requisição Fornecedor.insert()");
             Fornecedor fornecedor =  FornecedorDTO.criaFornecedor(fornecedorDTO);
+            fornecedorDTO.idCategoria().stream().forEach(c -> fornecedor.getCategorias().add(categoriaRepository.findById(c)));
             repository.persist(fornecedor);
             return Response.ok(new FornecedorResponseDTO(fornecedor)).build();
         } catch (Exception e) {
@@ -91,7 +96,8 @@ public class FornecedorServiceImpl implements FornecedorService {
     public Response delete(Long id) {
         try {
             LOG.info("Requisição Fornecedor.delete()");
-            repository.findById(id).setAtivo(false);
+            Fornecedor f = repository.findById(id);
+            f.setAtivo(false);
             return Response.ok().build();
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Fornecedor.delete()");

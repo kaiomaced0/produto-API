@@ -67,7 +67,7 @@ public class ClienteResource {
     }
 
     @PATCH
-    @Path("/{id}")
+    @Path("/delete/{id}")
     @PermitAll
     public Response delete(@PathParam("id") Long id) {
         return service.delete(id);

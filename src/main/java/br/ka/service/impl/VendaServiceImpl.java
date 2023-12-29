@@ -1,10 +1,14 @@
 package br.ka.service.impl;
 
 import br.ka.model.EntityClass;
+import br.ka.model.ItemProduto;
 import br.ka.service.VendaService;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.core.Response;
+
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.stream.Collectors;
 import java.util.List;
 import org.jboss.logging.Logger;
@@ -67,7 +71,13 @@ public class VendaServiceImpl implements VendaService {
             LOG.info("Requisição Venda.insert()");
             Venda venda =  new Venda();
             venda.setCliente(clienteRepository.findById(vendaDTO.idCliente()));
-            vendaDTO.idItemProdutos().forEach(v -> venda.getItemProdutos().add(itemProdutoRepository.findById(v)));
+            venda.setItemProdutos(new ArrayList<>());
+            venda.setValorTotal(0.0);
+            vendaDTO.idItemProdutos().forEach(v -> {
+                ItemProduto i = itemProdutoRepository.findById(v);
+                venda.setValorTotal(venda.getValorTotal() + i.getPreco());
+                venda.getItemProdutos().add(i);
+            } );
             venda.setObservacao(vendaDTO.observacao());
             venda.getItemProdutos().forEach(v -> venda.setValorTotal(venda.getValorTotal() + v.getPreco()));
             repository.persist(venda);

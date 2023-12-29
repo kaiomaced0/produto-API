@@ -1,10 +1,9 @@
 package br.ka.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 
 @Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 public class ItemProduto extends EntityClass {
 
     @ManyToOne
