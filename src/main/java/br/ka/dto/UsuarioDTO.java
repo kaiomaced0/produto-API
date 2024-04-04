@@ -6,10 +6,18 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 public record UsuarioDTO(
-
-                String cpf,
-                String nome,
-                String email,
-                @NotBlank @Size(min = 3, max = 1000) String senha) {
+        String nome,
+        String login,
+        String email,
+        String senha,
+        String cpf,
+        Integer idPerfil) {
+    public static Usuario criaUsuario(UsuarioDTO usuarioDTO) {
+        Usuario entity = new Usuario();
+        entity.setNome(usuarioDTO.nome());
+        entity.setLogin(usuarioDTO.login());
+        entity.setCpf(usuarioDTO.cpf());
+        return entity;
+    }
 
 }

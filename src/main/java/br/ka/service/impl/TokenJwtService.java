@@ -32,7 +32,7 @@ public class TokenJwtService{
             Log.info("Requisição TokenJwt.generateJwt()");
 
             return Jwt.issuer("giraffus-jwt")
-                    .subject(usuario.getLogin())
+                    .subject(usuario.getCpf())
                     .groups(roles)
                     .expiresAt(expiryDate)
                     .sign();
