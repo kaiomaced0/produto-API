@@ -1,6 +1,7 @@
 package br.ka.service.impl;
 
 
+import br.ka.model.Perfil;
 import br.ka.model.Usuario;
 import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -9,6 +10,10 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Set;
 import io.smallrye.jwt.build.Jwt;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.OneToMany;
+import jakarta.transaction.Transactional;
+
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -18,6 +23,7 @@ public class TokenJwtService{
     private static final Duration EXPIRATION_TIME = Duration.ofDays(200);
 
 
+    @Transactional
     public String generateJwt(Usuario usuario) {
 
         try {
@@ -32,8 +38,8 @@ public class TokenJwtService{
             Log.info("Requisição TokenJwt.generateJwt()");
 
             return Jwt.issuer("giraffus-jwt")
-                    .subject(usuario.getLogin())
                     .groups(roles)
+                    .subject(usuario.getLogin())
                     .expiresAt(expiryDate)
                     .sign();
 

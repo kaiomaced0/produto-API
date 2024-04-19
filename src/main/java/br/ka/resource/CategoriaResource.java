@@ -4,6 +4,7 @@ import br.ka.dto.CategoriaDTO;
 import br.ka.dto.CategoriaUpdateDTO;
 import br.ka.dto.responseDTO.CategoriaResponseDTO;
 import br.ka.service.CategoriaService;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 import jakarta.annotation.security.PermitAll;
@@ -21,7 +22,7 @@ public class CategoriaResource {
 
     @GET
     @PermitAll
-    public List<CategoriaResponseDTO> getAll() {
+    public Response getAll() {
         return service.getAll();
     }
 
@@ -33,20 +34,20 @@ public class CategoriaResource {
     }
 
     @POST
-    @PermitAll
+    @RolesAllowed({"Admin"})
     public Response insert(CategoriaDTO categoriaDTO) {
         return service.insert(categoriaDTO);
     }
 
     @PUT
-    @PermitAll
+    @RolesAllowed({"Admin"})
     public Response update(CategoriaUpdateDTO categoriaUpdateDTO) {
         return service.update(categoriaUpdateDTO);
     }
 
     @PATCH
     @Path("/delete/{id}")
-    @PermitAll
+    @RolesAllowed({"Admin"})
     public Response delete(@PathParam("id") Long id) {
         return service.delete(id);
     }

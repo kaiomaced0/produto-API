@@ -8,7 +8,7 @@ import br.ka.dto.responseDTO.CategoriaResponseDTO;
 
 public interface CategoriaService {
 
-    List<CategoriaResponseDTO> getAll();
+    Response getAll();
 
     Response getId(Long id);
 
