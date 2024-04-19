@@ -1,5 +1,6 @@
 package br.ka.service.impl;
 
+import br.ka.dto.responseDTO.UsuarioResponseDTO;
 import br.ka.model.Empresa;
 import br.ka.model.EntityClass;
 import br.ka.model.Usuario;
@@ -11,6 +12,8 @@ import jakarta.transaction.Transactional;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.jboss.logging.Logger;
+
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.List;
 import br.ka.repository.CategoriaRepository;
@@ -38,22 +41,23 @@ public class CategoriaServiceImpl implements CategoriaService {
     UsuarioRepository usuarioRepository;
 
     @Override
-    public List<CategoriaResponseDTO> getAll() {
-        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
+    public Response getAll() {
         try {
+            Usuario u = usuarioRepository.findByLogin(jsonWebToken.getSubject());
             LOG.info("Requisição Categoria.getAll()");
-            return repository.listAll().stream().filter(c -> c.getEmpresa() == u.getEmpresa()).filter(EntityClass::getAtivo)
+            return Response.ok(repository.listAll().stream().filter(c -> u.getEmpresa().equals(c.getEmpresa())).filter(EntityClass::getAtivo)
                     .map(CategoriaResponseDTO::new)
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toList())).build();
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Categoria.getAll()");
-            return null;
+            return Response
+                    .status(400).entity(e.getMessage()).build();
         }
     }
 
     @Override
     public Response getId(Long id) {
-        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
+        Usuario u = usuarioRepository.findByLogin(jsonWebToken.getSubject());
         try {
             LOG.info("Requisição Categoria.getId()");
             Categoria categoria = repository.findById(id);
@@ -65,14 +69,14 @@ public class CategoriaServiceImpl implements CategoriaService {
             }
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Categoria.getId()");
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(400).entity(e.getMessage()).build();
         }
     }
 
     @Override
     @Transactional
     public Response insert(CategoriaDTO categoriaDTO) {
-        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
+        Usuario u = usuarioRepository.findByLogin(jsonWebToken.getSubject());
         try {
             LOG.info("Requisição Categoria.insert()");
             Categoria categoria = CategoriaDTO.criaCategoria(categoriaDTO);
@@ -81,32 +85,32 @@ public class CategoriaServiceImpl implements CategoriaService {
             return Response.ok(new CategoriaResponseDTO(categoria)).build();
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Categoria.insert()");
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(400).entity(e.getMessage()).build();
         }
     }
 
     @Override
     @Transactional
     public Response update(CategoriaUpdateDTO categoriaUpdateDTO) {
-        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
+        Usuario u = usuarioRepository.findByLogin(jsonWebToken.getSubject());
         try {
             LOG.info("Requisição Categoria.update()");
             Categoria categoria = repository.findById(categoriaUpdateDTO.id());
-            if(categoria.getEmpresa() != u.getEmpresa()){
+            if(!Objects.equals(categoria.getEmpresa(), u.getEmpresa())){
                 throw new Exception();
             }
             categoria.setNome(categoriaUpdateDTO.nome());
             return Response.ok().build();
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Categoria.update()");
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(400).entity(e.getMessage()).build();
         }
     }
 
     @Override
     @Transactional
     public Response delete(Long id) {
-        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
+        Usuario u = usuarioRepository.findByLogin(jsonWebToken.getSubject());
         try {
             LOG.info("Requisição Categoria.delete()");
             Categoria c = new Categoria();
@@ -119,7 +123,7 @@ public class CategoriaServiceImpl implements CategoriaService {
             return Response.ok().build();
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Categoria.delete()");
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(400).entity(e.getMessage()).build();
         }
     }
 }
