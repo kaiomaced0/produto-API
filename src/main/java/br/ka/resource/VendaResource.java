@@ -38,11 +38,11 @@ public class VendaResource {
         return service.insert(VendaDTO);
     }
 
-    @PUT
-    @PermitAll
-    public Response update(VendaUpdateDTO VendaUpdateDTO) {
-        return service.update(VendaUpdateDTO);
-    }
+//    @PUT
+//    @PermitAll
+//    public Response update(VendaUpdateDTO VendaUpdateDTO) {
+//        return service.update(VendaUpdateDTO);
+//    }
 
     @PATCH
     @Path("/delete/{id}")

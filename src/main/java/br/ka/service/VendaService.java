@@ -15,7 +15,7 @@ public interface VendaService {
 
     Response insert(VendaDTO VendaDTO);
 
-    Response update(VendaUpdateDTO VendaUpdateDTO);
+//    Response update(VendaUpdateDTO VendaUpdateDTO);
 
     Response delete(@PathParam("id") Long id);
 }
