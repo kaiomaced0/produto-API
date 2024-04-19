@@ -2,6 +2,8 @@ package br.ka.service.impl;
 
 import br.ka.model.EntityClass;
 import br.ka.model.Estado;
+import br.ka.model.Usuario;
+import br.ka.repository.UsuarioRepository;
 import br.ka.service.CidadeService;
 import br.ka.repository.CidadeRepository;
 import br.ka.model.Cidade;
@@ -11,9 +13,11 @@ import br.ka.dto.responseDTO.CidadeResponseDTO;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.core.Response;
+import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.jboss.logging.Logger;
 import jakarta.enterprise.context.ApplicationScoped;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,16 +29,23 @@ public class CidadeServiceImpl implements CidadeService {
     @Inject
     CidadeRepository repository;
 
+    @Inject
+    JsonWebToken jsonWebToken;
+
+    @Inject
+    UsuarioRepository usuarioRepository;
+
     @Override
-    public List<CidadeResponseDTO> getAll() {
+    public Response getAll() {
+        Usuario u = usuarioRepository.findByLogin(jsonWebToken.getSubject());
         try {
             LOG.info("Requisição Cidade.getAll()");
-            return repository.listAll().stream().filter(EntityClass::getAtivo)
+            return Response.ok(repository.listAll().stream().filter(EntityClass::getAtivo)
                     .map(CidadeResponseDTO::new)
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toList())).build();
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Cidade.getAll()", e);
-            return null;
+            return Response.status(400).entity(e.getMessage()).build();
         }
     }
 
@@ -51,7 +62,17 @@ public class CidadeServiceImpl implements CidadeService {
             }
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Cidade.getId()", e);
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(400).entity(e.getMessage()).build();
+        }
+    }
+    @Override
+    public Response getNome(String nome) {
+        try {
+            LOG.info("Requisição Cidade.getNome()");
+            return Response.ok(repository.findByNome(nome).stream().filter(EntityClass::getAtivo).map(CidadeResponseDTO::new).collect(Collectors.toList())).build();
+        } catch (Exception e) {
+            LOG.error("Erro ao rodar Requisição Cidade.getId()", e);
+            return Response.status(400).entity(e.getMessage()).build();
         }
     }
 
@@ -66,7 +87,7 @@ public class CidadeServiceImpl implements CidadeService {
             return Response.ok(new CidadeResponseDTO(cidade)).build();
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Cidade.insert()", e);
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(400).entity(e.getMessage()).build();
         }
     }
 
@@ -76,7 +97,7 @@ public class CidadeServiceImpl implements CidadeService {
         try {
             LOG.info("Requisição Cidade.update()");
             Cidade existingCidade = repository.findById(cidadeUpdateDTO.id());
-            if (existingCidade != null) {
+            if (existingCidade != null && existingCidade.getAtivo()) {
                 existingCidade.setNome(cidadeUpdateDTO.nome());
                 existingCidade.setEstado(Estado.valueOf(cidadeUpdateDTO.estadoId()));
                 return Response.ok().build();
@@ -86,7 +107,7 @@ public class CidadeServiceImpl implements CidadeService {
             }
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Cidade.update()", e);
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(400).entity(e.getMessage()).build();
         }
     }
 
@@ -105,7 +126,7 @@ public class CidadeServiceImpl implements CidadeService {
             }
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Cidade.delete()", e);
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(400).entity(e.getMessage()).build();
         }
     }
 }
