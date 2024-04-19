@@ -1,5 +1,6 @@
 package br.ka.service;
 
+import br.ka.dto.CategoriaDTO;
 import br.ka.dto.ProdutoUpdateDTO;
 import br.ka.dto.responseDTO.ProdutoResponseDTO;
 import jakarta.ws.rs.PathParam;
@@ -17,6 +18,13 @@ public interface ProdutoService {
 
     public Response delete(@PathParam("id") Long id);
 
-    public Response update(ProdutoUpdateDTO produtoDTO);
+    public Response update(Long id, ProdutoUpdateDTO produtoDTO);
+
+    public Response addCategoria(Long id, List<Long> categorias);
+
+    public Response estoque();
+
+    public Response addEstoque(Long id, Integer quantidae);
+    public Response removeEstoque(Long id, Integer quantidae);
 }
 

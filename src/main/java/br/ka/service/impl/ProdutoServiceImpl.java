@@ -1,12 +1,12 @@
 package br.ka.service.impl;
 import br.ka.dto.ProdutoUpdateDTO;
+import br.ka.dto.responseDTO.EstoqueResponseDTO;
 import br.ka.model.*;
 import br.ka.repository.*;
 import br.ka.service.ProdutoService;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.Status;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.jboss.logging.Logger;
@@ -42,7 +42,7 @@ public class ProdutoServiceImpl implements ProdutoService {
 
     @Override
     public List<ProdutoResponseDTO> getAll() {
-        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
+        Usuario u = usuarioRepository.findByLogin(jsonWebToken.getSubject());
         try {
             LOG.info("Requisição Produto.getAll()");
             return repository.listAll().stream().filter(p -> p.getEmpresa() == u.getEmpresa()).filter(EntityClass::getAtivo)
@@ -57,7 +57,7 @@ public class ProdutoServiceImpl implements ProdutoService {
 
     @Override
     public Response getId(Long id) {
-        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
+        Usuario u = usuarioRepository.findByLogin(jsonWebToken.getSubject());
         try {
             LOG.info("Requisição Produto.getId()");
             Produto produto = repository.findById(id);
@@ -68,14 +68,14 @@ public class ProdutoServiceImpl implements ProdutoService {
             }
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Produto.getId()", e);
-            return Response.status(Status.NOT_FOUND).build();
+            return Response.status(400).entity(e.getMessage()).build();
         }
     }
 
     @Override
     @Transactional
     public Response insert(ProdutoDTO produtoDTO) {
-        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
+        Usuario u = usuarioRepository.findByLogin(jsonWebToken.getSubject());
         try {
             LOG.info("Requisição Produto.insert()");
             Produto produto = ProdutoDTO.criaProduto(produtoDTO);
@@ -94,14 +94,14 @@ public class ProdutoServiceImpl implements ProdutoService {
             return Response.ok(new ProdutoResponseDTO(produto)).build();
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Produto.insert()", e);
-            return Response.status(Status.NOT_FOUND).build();
+            return Response.status(400).entity(e.getMessage()).build();
         }
     }
 
     @Override
     @Transactional
     public Response delete(Long id) {
-        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
+        Usuario u = usuarioRepository.findByLogin(jsonWebToken.getSubject());
         try {
             LOG.info("Requisição Produto.delete()");
             Produto p =  new Produto();
@@ -114,17 +114,17 @@ public class ProdutoServiceImpl implements ProdutoService {
             }
          catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Produto.delete()", e);
-             return Response.status(Status.NOT_FOUND).build();
+             return Response.status(400).entity(e.getMessage()).build();
         }
     }
 
     @Override
     @Transactional
-    public Response update(ProdutoUpdateDTO produtoDTO) {
-        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
+    public Response update(Long id, ProdutoUpdateDTO produtoDTO) {
+        Usuario u = usuarioRepository.findByLogin(jsonWebToken.getSubject());
         try {
             LOG.info("Requisição Produto.update()");
-            Produto produto = repository.findById(produtoDTO.id());
+            Produto produto = repository.findById(id);
 
             if (produto.getAtivo() && produto.getEmpresa() == u.getEmpresa()) {
                 produto.setNome(produtoDTO.nome());
@@ -142,7 +142,87 @@ public class ProdutoServiceImpl implements ProdutoService {
             }
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Produto.update()", e);
-            return Response.status(Status.NOT_FOUND).build();
+            return Response.status(400).entity(e.getMessage()).build();
+        }
+    }
+
+    @Override
+    @Transactional
+    public Response addCategoria(Long id, List<Long> categorias) {
+        Usuario u = usuarioRepository.findByLogin(jsonWebToken.getSubject());
+        try {
+            LOG.info("Requisição Produto.addCategoria()");
+            Produto produto = repository.findById(id);
+
+            if (!produto.getAtivo() || produto.getEmpresa() != u.getEmpresa()) {
+                throw new Exception();
+            }
+            if(produto.getCategorias() == null)
+                produto.setCategorias(new HashSet<>());
+
+            categorias.forEach(c -> produto.getCategorias().add(categoriaRepository.findById(c)));
+            return Response.ok().build();
+
+        }catch (Exception e){
+            LOG.error("Erro ao rodar Requisição Produto.addCategoria()", e);
+            return Response.status(400).entity(e.getMessage()).build();
+        }
+    }
+
+    @Override
+    public Response estoque() {
+        Usuario u = usuarioRepository.findByLogin(jsonWebToken.getSubject());
+        try{
+            LOG.info("Requisição Produto.estoque()");
+            return Response.ok(repository.listAll().stream().filter(p -> p.getEmpresa() == u.getEmpresa()).filter(EntityClass::getAtivo)
+                    .map(EstoqueResponseDTO::new)
+                    .collect(Collectors.toList())).build();
+        }catch (Exception e){
+            LOG.error("Erro ao rodar Requisição Produto.estoque()", e);
+            return Response.status(400).entity(e.getMessage()).build();
+
+        }
+    }
+
+    @Override
+    public Response addEstoque(Long id, Integer quantidade) {
+        Usuario u = usuarioRepository.findByLogin(jsonWebToken.getSubject());
+        try{
+            LOG.info("Requisição Produto.addEstoque()");
+            Produto p = repository.findById(id);
+
+            if(!u.getPerfis().contains(Perfil.SISTEMA)){
+                if(u.getEmpresa() != p.getEmpresa()){
+                    throw new Exception("Produto não é da mesma empresa!");
+                }
+            }
+            p.setEstoque(p.getEstoque() + quantidade);
+            return Response.ok(new EstoqueResponseDTO(p)).build();
+        }catch (Exception e){
+            LOG.error("Erro ao rodar Requisição Produto.addEstoque()", e);
+            return Response.status(400).entity(e.getMessage()).build();
+
+        }
+    }
+
+    @Override
+    public Response removeEstoque(Long id, Integer quantidade) {
+        Usuario u = usuarioRepository.findByLogin(jsonWebToken.getSubject());
+        try{
+            LOG.info("Requisição Produto.removeEstoque()");
+            Produto p = repository.findById(id);
+
+            if(!u.getPerfis().contains(Perfil.SISTEMA)){
+                if(u.getEmpresa() != p.getEmpresa()){
+                    throw new Exception("Produto não é da mesma empresa!");
+                }
+            }
+            p.setEstoque(p.getEstoque() - quantidade);
+            return Response.ok(new EstoqueResponseDTO(p)).build();
+        }catch (Exception e){
+            LOG.error("Erro ao rodar Requisição Produto.removeEstoque()", e);
+            return Response.status(400).entity(e.getMessage()).build();
+
         }
     }
 }
