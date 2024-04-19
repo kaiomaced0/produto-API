@@ -3,7 +3,6 @@ package br.ka.dto;
 import java.util.List;
 
 public record ProdutoUpdateDTO(
-        Long id,
         String nome,
         String descricao,
         Integer estoque,
