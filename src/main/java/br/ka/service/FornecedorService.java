@@ -15,7 +15,7 @@ public interface FornecedorService {
 
     Response insert(FornecedorDTO fornecedorDTO);
 
-    Response update(FornecedorUpdateDTO dto);
+    Response update(Long id, FornecedorUpdateDTO dto);
 
     Response delete(@PathParam("id") Long id);
 }

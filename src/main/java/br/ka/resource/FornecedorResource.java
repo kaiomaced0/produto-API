@@ -4,6 +4,7 @@ import br.ka.dto.FornecedorDTO;
 import br.ka.dto.FornecedorUpdateDTO;
 import br.ka.dto.responseDTO.FornecedorResponseDTO;
 import br.ka.service.FornecedorService;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 import jakarta.annotation.security.PermitAll;
@@ -39,14 +40,15 @@ public class FornecedorResource {
     }
 
     @PUT
-    @PermitAll
-    public Response update(FornecedorUpdateDTO fornecedorUpdateDTO) {
-        return service.update(fornecedorUpdateDTO);
+    @RolesAllowed({"Admin"})
+    @Path("/{id}")
+    public Response update(@PathParam("id") Long id, FornecedorUpdateDTO fornecedorUpdateDTO) {
+        return service.update(id, fornecedorUpdateDTO);
     }
 
     @PATCH
     @Path("/delete/{id}")
-    @PermitAll
+    @RolesAllowed({"Admin"})
     public Response delete(@PathParam("id") Long id) {
         return service.delete(id);
     }
