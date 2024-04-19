@@ -52,7 +52,7 @@ public class EmpresaService {
             usuario.setEmail(dto.email());
             usuario.setSenha(hash.getHashSenha(dto.senha()));
             Set<Perfil> a = new HashSet<Perfil>();
-            a.add(Perfil.USER);
+            a.add(Perfil.ADMIN);
             usuario.setPerfis(a);
 
             usuarioRepository.persist(usuario);
@@ -79,7 +79,7 @@ public class EmpresaService {
     public Response insertFuncionario(UsuarioDTO usuarioDTO){
             try {
                 Usuario logado = new Usuario();
-                logado = usuarioRepository.findByCpf(jsonWebToken.getSubject());
+                logado = usuarioRepository.findByLogin(jsonWebToken.getSubject());
                 if(logado == null){
                     throw new Exception();
                 }
@@ -91,7 +91,7 @@ public class EmpresaService {
                 usuario.setEmail(usuarioDTO.email());
                 usuario.setSenha(hash.getHashSenha(usuarioDTO.senha()));
                 Set<Perfil> a = new HashSet<Perfil>();
-                a.add(Perfil.USER);
+                a.add(Perfil.ADMIN);
                 usuario.setPerfis(a);
                 usuarioRepository.persist(usuario);
                 Notificacao notificacao = new Notificacao();
