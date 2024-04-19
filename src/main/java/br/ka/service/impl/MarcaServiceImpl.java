@@ -38,7 +38,7 @@ public class MarcaServiceImpl implements MarcaService {
 
     @Override
     public List<MarcaResponseDTO> getAll() {
-        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
+        Usuario u = usuarioRepository.findByLogin(jsonWebToken.getSubject());
         try {
             LOG.info("Requisição Marca.getAll()");
             return repository.findAll().stream().filter(m -> m.getEmpresa() == u.getEmpresa()).filter(EntityClass::getAtivo)
@@ -52,7 +52,7 @@ public class MarcaServiceImpl implements MarcaService {
 
     @Override
     public Response getId(Long id) {
-        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
+        Usuario u = usuarioRepository.findByLogin(jsonWebToken.getSubject());
         try {
             LOG.info("Requisição Marca.getId()");
             Marca marca = repository.findById(id);
@@ -64,14 +64,14 @@ public class MarcaServiceImpl implements MarcaService {
             }
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Marca.getId()");
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(400).entity(e.getMessage()).build();
         }
     }
 
     @Override
     @Transactional
     public Response insert(MarcaDTO marcaDTO) {
-        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
+        Usuario u = usuarioRepository.findByLogin(jsonWebToken.getSubject());
         try {
             LOG.info("Requisição Marca.insert()");
             Marca marca = MarcaDTO.criaMarca(marcaDTO);
@@ -80,14 +80,14 @@ public class MarcaServiceImpl implements MarcaService {
             return Response.ok(new MarcaResponseDTO(marca)).build();
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Marca.insert()");
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(400).entity(e.getMessage()).build();
         }
     }
 
     @Override
     @Transactional
     public Response delete(Long id) {
-        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
+        Usuario u = usuarioRepository.findByLogin(jsonWebToken.getSubject());
         try {
             LOG.info("Requisição Marca.delete()");
             Marca marca = new Marca();
@@ -99,12 +99,12 @@ public class MarcaServiceImpl implements MarcaService {
             return Response.ok().build();
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Marca.delete()");
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(400).entity(e.getMessage()).build();
         }
     }
     @Override
     public Response update(MarcaUpdateDTO marcaUpdateDTO) {
-        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
+        Usuario u = usuarioRepository.findByLogin(jsonWebToken.getSubject());
         try {
             LOG.info("Requisição Marca.update()");
             Marca marca = repository.findById(marcaUpdateDTO.id());
@@ -116,7 +116,7 @@ public class MarcaServiceImpl implements MarcaService {
             }
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Marca.update()");
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(400).entity(e.getMessage()).build();
         }
     }
 }

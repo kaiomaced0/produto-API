@@ -4,6 +4,7 @@ import br.ka.dto.MarcaDTO;
 import br.ka.dto.MarcaUpdateDTO;
 import br.ka.dto.responseDTO.MarcaResponseDTO;
 import br.ka.service.MarcaService;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 import jakarta.annotation.security.PermitAll;
@@ -46,7 +47,7 @@ public class MarcaResource {
 
     @PATCH
     @Path("/delete/{id}")
-    @PermitAll
+    @RolesAllowed({"Admin"})
     public Response delete(@PathParam("id") Long id) {
         return service.delete(id);
     }
