@@ -11,11 +11,18 @@ public record ClienteDTO(
 
     public static Cliente criaCliente(ClienteDTO clienteDTO) {
         Cliente cliente = new Cliente();
-        cliente.setNomeEmpresa(clienteDTO.nomeEmpresa());
-        cliente.setCnpj(clienteDTO.cnpj());
-        cliente.setNomeCliente(clienteDTO.nomeCliente());
-        cliente.setCpfCliente(clienteDTO.cpfCliente());
-        cliente.setEndereco(clienteDTO.endereco());
+
+        if (clienteDTO.nomeCliente() != null)
+            cliente.setNomeCliente(clienteDTO.nomeCliente());
+        if (clienteDTO.nomeEmpresa() != null)
+            cliente.setNomeEmpresa(clienteDTO.nomeEmpresa());
+        if (clienteDTO.cnpj() != null)
+            cliente.setCnpj(clienteDTO.cnpj());
+        if (clienteDTO.cpfCliente() != null)
+            cliente.setCpfCliente(clienteDTO.cpfCliente());
+        if (clienteDTO.endereco() != null)
+            cliente.setEndereco(clienteDTO.endereco());
+
         return cliente;
     }
 }
