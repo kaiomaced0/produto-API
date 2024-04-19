@@ -5,6 +5,7 @@ import br.ka.dto.NotificacaoUpdateDTO;
 import br.ka.dto.responseDTO.NotificacaoResponseDTO;
 import br.ka.service.NotificacaoService;
 import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
@@ -27,26 +28,26 @@ public class NotificacaoResource {
 
     @GET
     @Path("/{id}")
-    @PermitAll
+    @RolesAllowed({"Sistema"})
     public Response getId(@PathParam("id") Long id) {
         return service.getId(id);
     }
 
     @POST
-    @PermitAll
+    @RolesAllowed({"Sistema"})
     public Response insert(NotificacaoDTO notificacaoDTO) {
         return service.insert(notificacaoDTO);
     }
 
     @PUT
-    @PermitAll
+    @RolesAllowed({"Sistema"})
     public Response update(NotificacaoUpdateDTO notificacaoUpdateDTO) {
         return service.update(notificacaoUpdateDTO);
     }
 
     @PATCH
     @Path("/delete/{id}")
-    @PermitAll
+    @RolesAllowed({"Sistema"})
     public Response delete(@PathParam("id") Long id) {
         return service.delete(id);
     }

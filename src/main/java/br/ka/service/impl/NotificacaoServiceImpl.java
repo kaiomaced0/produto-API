@@ -40,10 +40,10 @@ public class NotificacaoServiceImpl implements NotificacaoService {
 
     @Override
     public List<NotificacaoResponseDTO> getAll() {
-        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
+        Usuario u = usuarioRepository.findByLogin(jsonWebToken.getSubject());
         try {
             LOG.info("Requisição Notificacao.getAll()");
-            return repository.listAll().stream().filter(n -> n.getEmpresa() == u.getEmpresa()).filter(EntityClass::getAtivo)
+            return repository.listAll().stream().filter(n -> n.getEmpresa() == u.getEmpresa()).filter(EntityClass::getAtivo).filter(Notificacao::getLida)
                     .map(NotificacaoResponseDTO::new)
                     .collect(Collectors.toList());
         } catch (Exception e) {
@@ -54,7 +54,7 @@ public class NotificacaoServiceImpl implements NotificacaoService {
 
     @Override
     public Response getId(Long id) {
-        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
+        Usuario u = usuarioRepository.findByLogin(jsonWebToken.getSubject());
         try {
             LOG.info("Requisição Notificacao.getId()");
             Notificacao notificacao = repository.findById(id);
@@ -66,7 +66,20 @@ public class NotificacaoServiceImpl implements NotificacaoService {
             }
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Notificacao.getId()");
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(400).entity(e.getMessage()).build();
+        }
+    }
+
+    @Override
+    @Transactional
+    public Response lida(Long id) {
+        try {
+            LOG.info("Requisição Notificacao.lida()");
+            repository.findById(id).setLida(true);
+            return Response.ok().build();
+        } catch (Exception e) {
+            LOG.error("Erro ao rodar Requisição Notificacao.lida()");
+            return Response.status(400).entity(e.getMessage()).build();
         }
     }
 
@@ -76,14 +89,13 @@ public class NotificacaoServiceImpl implements NotificacaoService {
         try {
             LOG.info("Requisição Notificacao.insert()");
             Notificacao notificacao = NotificacaoDTO.criaNotificacao(notificacaoDTO);
-            Empresa e = new Empresa();
-            e = empresaRepository.findById(notificacaoDTO.idEmpresa());
+            Empresa e = empresaRepository.findById(notificacaoDTO.idEmpresa());
             notificacao.setEmpresa(e);
             repository.persist(notificacao);
             return Response.ok(new NotificacaoResponseDTO(notificacao)).build();
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Notificacao.insert()");
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(400).entity(e.getMessage()).build();
         }
     }
 
@@ -97,7 +109,7 @@ public class NotificacaoServiceImpl implements NotificacaoService {
             return Response.ok().build();
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Notificacao.update()");
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(400).entity(e.getMessage()).build();
         }
     }
 
@@ -110,7 +122,7 @@ public class NotificacaoServiceImpl implements NotificacaoService {
             return Response.ok().build();
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Notificacao.delete()");
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(400).entity(e.getMessage()).build();
         }
     }
 }

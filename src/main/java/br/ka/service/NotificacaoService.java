@@ -13,6 +13,8 @@ public interface NotificacaoService {
 
     Response getId(Long id);
 
+    Response lida(Long id);
+
     Response insert(NotificacaoDTO notificacaoDTO);
 
     Response delete(Long id);
