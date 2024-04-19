@@ -1,10 +1,6 @@
 package br.ka.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import br.ka.model.Perfil;
 
 import java.util.Set;
@@ -27,6 +23,9 @@ public class Usuario extends EntityClass {
     @JoinColumn(name = "empresa_usuario")
     private Empresa empresa;
 
+    @ElementCollection
+    @CollectionTable(name = "usuario_perfil", joinColumns = @JoinColumn(name = "id_usuario", referencedColumnName = "id"))
+    @Column(name = "perfil", length = 30)
     private Set<Perfil> perfis;
 
     public String getNome() {

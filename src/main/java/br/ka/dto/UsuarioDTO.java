@@ -9,7 +9,8 @@ public record UsuarioDTO(
 
                 String cpf,
                 String nome,
+                String login,
                 String email,
-                @NotBlank @Size(min = 3, max = 1000) String senha) {
+                @NotBlank @Size(min = 3, max = 1000) String senha, Boolean admin) {
 
 }
