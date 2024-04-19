@@ -8,9 +8,11 @@ import br.ka.dto.responseDTO.CidadeResponseDTO;
 
 public interface CidadeService {
 
-    List<CidadeResponseDTO> getAll();
+    Response getAll();
 
     Response getId(Long id);
+
+    Response getNome(String id);
 
     Response insert(CidadeDTO cidadeDTO);
 

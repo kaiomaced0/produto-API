@@ -5,6 +5,7 @@ import br.ka.dto.CidadeUpdateDTO;
 import br.ka.dto.responseDTO.CidadeResponseDTO;
 import br.ka.service.CidadeService;
 import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -22,7 +23,7 @@ public class CidadeResource {
 
     @GET
     @PermitAll
-    public List<CidadeResponseDTO> getAll() {
+    public Response getAll() {
         return service.getAll();
     }
 
@@ -34,20 +35,20 @@ public class CidadeResource {
     }
 
     @POST
-    @PermitAll
+    @RolesAllowed({"Admin"})
     public Response insert(CidadeDTO dto) {
         return service.insert(dto);
     }
 
     @PUT
-    @PermitAll
+    @RolesAllowed({"Admin"})
     public Response update(CidadeUpdateDTO updateDTO) {
         return service.update(updateDTO);
     }
 
     @PATCH
     @Path("/delete/{id}")
-    @PermitAll
+    @RolesAllowed({"Admin"})
     public Response delete(@PathParam("id") Long id) {
         return service.delete(id);
     }
