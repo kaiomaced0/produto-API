@@ -1,11 +1,10 @@
 package br.ka.service.impl;
 
-import br.ka.model.Usuario;
+import br.ka.dto.responseDTO.UsuarioResponseDTO;
 import br.ka.repository.UsuarioRepository;
+import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
-import jakarta.ws.rs.core.SecurityContext;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
 @ApplicationScoped
@@ -16,25 +15,19 @@ public class UsuarioLogadoService {
 
     @Inject
     UsuarioRepository usuarioRepository;
-    @Inject
-    HashService hash;
 
-//    @Transactional
-//    public UsuarioResponseDTO updateSenha(MudarSenhaDTO senha) {
-//        try {
-//
-//            Usuario entity = usuarioRepository.findByCpf(jsonWebToken.getSubject());
-//
-//            if(hash.getHashSenha(senha.senhaAntiga()) != entity.getSenha())
-//                throw new Exception("Senha anterior Incorreta");
-//
-//            entity.setSenha(hash.getHashSenha(senha.novaSenha()));
-//            return new UsuarioResponseDTO(entity);
-//        } catch (Exception e) {
-//            return null;
-//        }
-//
-//    }
+    public UsuarioResponseDTO getPerfilUsuarioLogado() {
+
+        String login = jsonWebToken.getSubject();
+        try {
+            Log.info("Requisição UsuarioLogado.getPerfilUsuarioLogado()");
+            return new UsuarioResponseDTO(usuarioRepository.findByLogin(login));
+        } catch (Exception e) {
+            Log.error("Erro ao rodar Requisição UsuarioLogado.getPerfilUsuarioLogado()");
+            return null;
+        }
+
+    }
 
 }
 
