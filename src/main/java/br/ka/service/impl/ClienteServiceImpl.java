@@ -44,22 +44,22 @@ public class ClienteServiceImpl implements ClienteService {
     UsuarioRepository usuarioRepository;
 
     @Override
-    public List<ClienteResponseDTO> getAll() {
-        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
+    public Response getAll() {
+        Usuario u = usuarioRepository.findByLogin(jsonWebToken.getSubject());
         try {
             LOG.info("Requisição Cliente.getAll()");
-            return repository.listAll().stream().filter(c -> c.getEmpresa() == u.getEmpresa()).filter(EntityClass::getAtivo)
+            return Response.ok(repository.listAll().stream().filter(c -> c.getEmpresa() == u.getEmpresa()).filter(EntityClass::getAtivo)
                     .map(ClienteResponseDTO::new)
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toList())).build();
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Cliente.getAll()");
-            return null;
+            return Response.status(400).entity(e.getMessage()).build();
         }
     }
 
     @Override
     public Response getId(Long id) {
-        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
+        Usuario u = usuarioRepository.findByLogin(jsonWebToken.getSubject());
         try {
             LOG.info("Requisição Cliente.getId()");
             Cliente cliente = repository.findById(id);
@@ -71,7 +71,7 @@ public class ClienteServiceImpl implements ClienteService {
             }
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Cliente.getId()");
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(400).entity(e.getMessage()).build();
         }
     }
 
@@ -79,7 +79,7 @@ public class ClienteServiceImpl implements ClienteService {
     @Transactional
     public Response insert(ClienteDTO clienteDTO) {
 
-        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
+        Usuario u = usuarioRepository.findByLogin(jsonWebToken.getSubject());
         try {
             LOG.info("Requisição Cliente.insert()");
             Cliente cliente = ClienteDTO.criaCliente(clienteDTO);
@@ -89,24 +89,29 @@ public class ClienteServiceImpl implements ClienteService {
             return Response.ok(new ClienteResponseDTO(cliente)).build();
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Cliente.insert()");
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(400).entity(e.getMessage()).build();
         }
     }
 
     @Override
     @Transactional
     public Response update(ClienteUpdateDTO clienteUpdateDTO) {
-        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
+        Usuario u = usuarioRepository.findByLogin(jsonWebToken.getSubject());
         try {
             LOG.info("Requisição Cliente.update()");
             Cliente cliente = repository.findById(clienteUpdateDTO.id());
             if (cliente.getAtivo() && cliente.getEmpresa() == u.getEmpresa()) {
-                cliente.setCidade(cidadeRepository.findById(clienteUpdateDTO.cidade()));
-                cliente.setNomeCliente(clienteUpdateDTO.nomeCliente());
-                cliente.setNomeEmpresa(clienteUpdateDTO.nomeEmpresa());
-                cliente.setCnpj(clienteUpdateDTO.cnpj());
-                cliente.setCpfCliente(clienteUpdateDTO.cpfCliente());
-                cliente.setEndereco(clienteUpdateDTO.endereco());
+                if (clienteUpdateDTO.nomeCliente() != null)
+                    cliente.setNomeCliente(clienteUpdateDTO.nomeCliente());
+                if (clienteUpdateDTO.nomeEmpresa() != null)
+                    cliente.setNomeEmpresa(clienteUpdateDTO.nomeEmpresa());
+                if (clienteUpdateDTO.cnpj() != null)
+                    cliente.setCnpj(clienteUpdateDTO.cnpj());
+                if (clienteUpdateDTO.cpfCliente() != null)
+                    cliente.setCpfCliente(clienteUpdateDTO.cpfCliente());
+                if (clienteUpdateDTO.endereco() != null)
+                    cliente.setEndereco(clienteUpdateDTO.endereco());
+
                 return Response.ok(new ClienteResponseDTO(cliente)).build();
             }
             else{
@@ -114,14 +119,14 @@ public class ClienteServiceImpl implements ClienteService {
             }
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Cliente.update()");
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(400).entity(e.getMessage()).build();
         }
     }
 
     @Override
     @Transactional
     public Response delete(Long id) {
-        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
+        Usuario u = usuarioRepository.findByLogin(jsonWebToken.getSubject());
         try {
             LOG.info("Requisição Cliente.delete()");
             Cliente cliente = repository.findById(id);
@@ -134,13 +139,13 @@ public class ClienteServiceImpl implements ClienteService {
             }
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Cliente.delete()");
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(400).entity(e.getMessage()).build();
         }
     }
 
     @Override
     public Response updateDadosEmpresa(ClienteUpdateDadosEmpresaDTO clienteUpdateDadosEmpresaDTO) {
-        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
+        Usuario u = usuarioRepository.findByLogin(jsonWebToken.getSubject());
         try {
             LOG.info("Requisição Cliente.update()");
             Cliente cliente = repository.findById(clienteUpdateDadosEmpresaDTO.id());
@@ -154,13 +159,13 @@ public class ClienteServiceImpl implements ClienteService {
             }
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Cliente.update()");
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(400).entity(e.getMessage()).build();
         }
     }
 
     @Override
     public Response updateDadosCliente(ClienteUpdateDadosClienteDTO clienteUpdateDadosClienteDTO) {
-        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
+        Usuario u = usuarioRepository.findByLogin(jsonWebToken.getSubject());
         try {
             LOG.info("Requisição Cliente.update()");
             Cliente cliente = repository.findById(clienteUpdateDadosClienteDTO.id());
@@ -174,13 +179,13 @@ public class ClienteServiceImpl implements ClienteService {
             }
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Cliente.update()");
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(400).entity(e.getMessage()).build();
         }    
     }
 
     @Override
     public Response updateEndereco(ClienteUpdateEnderecoDTO clienteUpdateEnderecoDTO) {
-        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
+        Usuario u = usuarioRepository.findByLogin(jsonWebToken.getSubject());
         
         try {
             LOG.info("Requisição Cliente.update()");
@@ -195,7 +200,7 @@ public class ClienteServiceImpl implements ClienteService {
             }
         } catch (Exception e) {
             LOG.error("Erro ao rodar Requisição Cliente.update()");
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(400).entity(e.getMessage()).build();
         }
     
     }

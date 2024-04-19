@@ -8,6 +8,7 @@ import br.ka.dto.ClienteUpdateEnderecoDTO;
 import br.ka.dto.responseDTO.ClienteResponseDTO;
 import br.ka.service.ClienteService;
 import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -25,7 +26,7 @@ public class ClienteResource {
 
     @GET
     @PermitAll
-    public List<ClienteResponseDTO> getAll() {
+    public Response getAll() {
         return service.getAll();
     }
 
@@ -68,7 +69,7 @@ public class ClienteResource {
 
     @PATCH
     @Path("/delete/{id}")
-    @PermitAll
+    @RolesAllowed({"Admin"})
     public Response delete(@PathParam("id") Long id) {
         return service.delete(id);
     }

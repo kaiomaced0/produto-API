@@ -11,7 +11,7 @@ import br.ka.dto.responseDTO.ClienteResponseDTO;
 
 public interface ClienteService {
 
-    List<ClienteResponseDTO> getAll();
+    Response getAll();
 
     Response getId(Long id);
 
