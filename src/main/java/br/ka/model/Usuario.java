@@ -1,9 +1,12 @@
 package br.ka.model;
 
-import jakarta.persistence.*;
-import br.ka.model.Perfil;
-
 import java.util.Set;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
