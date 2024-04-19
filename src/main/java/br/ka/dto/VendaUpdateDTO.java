@@ -6,5 +6,5 @@ public record VendaUpdateDTO(
         Long id,
         Long idCliente,
         String observacao,
-        List<Long> idItemProdutos
+        List<ItemProdutoDTO> itemprodutos
 ) {}
