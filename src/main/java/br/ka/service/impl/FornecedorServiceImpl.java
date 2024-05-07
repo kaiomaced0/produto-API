@@ -45,7 +45,7 @@ public class FornecedorServiceImpl implements FornecedorService {
 
     @Override
     public List<FornecedorResponseDTO> getAll() {
-        Usuario u = usuarioRepository.findByLogin(jsonWebToken.getSubject());
+        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
         try {
             LOG.info("Requisição Fornecedor.getAll()");
             return repository.listAll().stream().filter(f -> f.getEmpresa() ==u.getEmpresa()).filter(EntityClass::getAtivo)
@@ -59,7 +59,7 @@ public class FornecedorServiceImpl implements FornecedorService {
 
     @Override
     public Response getId(Long id) {
-        Usuario u = usuarioRepository.findByLogin(jsonWebToken.getSubject());
+        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
         try {
             LOG.info("Requisição Fornecedor.getId()");
             Fornecedor fornecedor = repository.findById(id);
@@ -78,7 +78,7 @@ public class FornecedorServiceImpl implements FornecedorService {
     @Override
     @Transactional
     public Response insert(FornecedorDTO fornecedorDTO) {
-        Usuario u = usuarioRepository.findByLogin(jsonWebToken.getSubject());
+        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
         try {
             LOG.info("Requisição Fornecedor.insert()");
             Fornecedor fornecedor =  FornecedorDTO.criaFornecedor(fornecedorDTO);
@@ -96,7 +96,7 @@ public class FornecedorServiceImpl implements FornecedorService {
     @Override
     @Transactional
     public Response update(Long id, FornecedorUpdateDTO dto) {
-        Usuario u = usuarioRepository.findByLogin(jsonWebToken.getSubject());
+        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
         try {
             LOG.info("Requisição Fornecedor.update()");
             Fornecedor fornecedor = repository.findById(id);
@@ -116,7 +116,7 @@ public class FornecedorServiceImpl implements FornecedorService {
     @Override
     @Transactional
     public Response delete(Long id) {
-        Usuario u = usuarioRepository.findByLogin(jsonWebToken.getSubject());
+        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
         try {
             LOG.info("Requisição Fornecedor.delete()");
             Fornecedor f = repository.findById(id);

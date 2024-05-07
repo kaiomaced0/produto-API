@@ -37,7 +37,6 @@ public class CidadeServiceImpl implements CidadeService {
 
     @Override
     public Response getAll() {
-        Usuario u = usuarioRepository.findByLogin(jsonWebToken.getSubject());
         try {
             LOG.info("Requisição Cidade.getAll()");
             return Response.ok(repository.listAll().stream().filter(EntityClass::getAtivo)

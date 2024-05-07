@@ -79,7 +79,7 @@ public class EmpresaService {
     public Response insertFuncionario(UsuarioDTO usuarioDTO){
             try {
                 Usuario logado = new Usuario();
-                logado = usuarioRepository.findByLogin(jsonWebToken.getSubject());
+                logado = usuarioRepository.findByCpf(jsonWebToken.getSubject());
                 if(logado == null){
                     throw new Exception();
                 }

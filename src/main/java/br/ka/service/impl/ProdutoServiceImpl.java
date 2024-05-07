@@ -42,10 +42,10 @@ public class ProdutoServiceImpl implements ProdutoService {
 
     @Override
     public List<ProdutoResponseDTO> getAll() {
-        Usuario u = usuarioRepository.findByLogin(jsonWebToken.getSubject());
+        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
         try {
             LOG.info("Requisição Produto.getAll()");
-            return repository.listAll().stream().filter(p -> p.getEmpresa() == u.getEmpresa()).filter(EntityClass::getAtivo)
+            return repository.listAll().stream().filter(p -> u.getEmpresa() == p.getEmpresa())
                     .map(ProdutoResponseDTO::new)
                     .collect(Collectors.toList());
         } catch (Exception e) {
@@ -57,7 +57,7 @@ public class ProdutoServiceImpl implements ProdutoService {
 
     @Override
     public Response getId(Long id) {
-        Usuario u = usuarioRepository.findByLogin(jsonWebToken.getSubject());
+        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
         try {
             LOG.info("Requisição Produto.getId()");
             Produto produto = repository.findById(id);
@@ -75,7 +75,7 @@ public class ProdutoServiceImpl implements ProdutoService {
     @Override
     @Transactional
     public Response insert(ProdutoDTO produtoDTO) {
-        Usuario u = usuarioRepository.findByLogin(jsonWebToken.getSubject());
+        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
         try {
             LOG.info("Requisição Produto.insert()");
             Produto produto = ProdutoDTO.criaProduto(produtoDTO);
@@ -101,7 +101,7 @@ public class ProdutoServiceImpl implements ProdutoService {
     @Override
     @Transactional
     public Response delete(Long id) {
-        Usuario u = usuarioRepository.findByLogin(jsonWebToken.getSubject());
+        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
         try {
             LOG.info("Requisição Produto.delete()");
             Produto p =  new Produto();
@@ -121,7 +121,7 @@ public class ProdutoServiceImpl implements ProdutoService {
     @Override
     @Transactional
     public Response update(Long id, ProdutoUpdateDTO produtoDTO) {
-        Usuario u = usuarioRepository.findByLogin(jsonWebToken.getSubject());
+        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
         try {
             LOG.info("Requisição Produto.update()");
             Produto produto = repository.findById(id);
@@ -149,7 +149,7 @@ public class ProdutoServiceImpl implements ProdutoService {
     @Override
     @Transactional
     public Response addCategoria(Long id, List<Long> categorias) {
-        Usuario u = usuarioRepository.findByLogin(jsonWebToken.getSubject());
+        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
         try {
             LOG.info("Requisição Produto.addCategoria()");
             Produto produto = repository.findById(id);
@@ -171,7 +171,7 @@ public class ProdutoServiceImpl implements ProdutoService {
 
     @Override
     public Response estoque() {
-        Usuario u = usuarioRepository.findByLogin(jsonWebToken.getSubject());
+        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
         try{
             LOG.info("Requisição Produto.estoque()");
             return Response.ok(repository.listAll().stream().filter(p -> p.getEmpresa() == u.getEmpresa()).filter(EntityClass::getAtivo)
@@ -186,7 +186,7 @@ public class ProdutoServiceImpl implements ProdutoService {
 
     @Override
     public Response addEstoque(Long id, Integer quantidade) {
-        Usuario u = usuarioRepository.findByLogin(jsonWebToken.getSubject());
+        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
         try{
             LOG.info("Requisição Produto.addEstoque()");
             Produto p = repository.findById(id);
@@ -207,7 +207,7 @@ public class ProdutoServiceImpl implements ProdutoService {
 
     @Override
     public Response removeEstoque(Long id, Integer quantidade) {
-        Usuario u = usuarioRepository.findByLogin(jsonWebToken.getSubject());
+        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
         try{
             LOG.info("Requisição Produto.removeEstoque()");
             Produto p = repository.findById(id);

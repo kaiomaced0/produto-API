@@ -59,7 +59,7 @@ public class ClienteServiceImpl implements ClienteService {
 
     @Override
     public Response getId(Long id) {
-        Usuario u = usuarioRepository.findByLogin(jsonWebToken.getSubject());
+        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
         try {
             LOG.info("Requisição Cliente.getId()");
             Cliente cliente = repository.findById(id);
@@ -79,7 +79,7 @@ public class ClienteServiceImpl implements ClienteService {
     @Transactional
     public Response insert(ClienteDTO clienteDTO) {
 
-        Usuario u = usuarioRepository.findByLogin(jsonWebToken.getSubject());
+        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
         try {
             LOG.info("Requisição Cliente.insert()");
             Cliente cliente = ClienteDTO.criaCliente(clienteDTO);
@@ -96,7 +96,7 @@ public class ClienteServiceImpl implements ClienteService {
     @Override
     @Transactional
     public Response update(ClienteUpdateDTO clienteUpdateDTO) {
-        Usuario u = usuarioRepository.findByLogin(jsonWebToken.getSubject());
+        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
         try {
             LOG.info("Requisição Cliente.update()");
             Cliente cliente = repository.findById(clienteUpdateDTO.id());
@@ -126,7 +126,7 @@ public class ClienteServiceImpl implements ClienteService {
     @Override
     @Transactional
     public Response delete(Long id) {
-        Usuario u = usuarioRepository.findByLogin(jsonWebToken.getSubject());
+        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
         try {
             LOG.info("Requisição Cliente.delete()");
             Cliente cliente = repository.findById(id);
@@ -145,7 +145,7 @@ public class ClienteServiceImpl implements ClienteService {
 
     @Override
     public Response updateDadosEmpresa(ClienteUpdateDadosEmpresaDTO clienteUpdateDadosEmpresaDTO) {
-        Usuario u = usuarioRepository.findByLogin(jsonWebToken.getSubject());
+        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
         try {
             LOG.info("Requisição Cliente.update()");
             Cliente cliente = repository.findById(clienteUpdateDadosEmpresaDTO.id());
@@ -165,7 +165,7 @@ public class ClienteServiceImpl implements ClienteService {
 
     @Override
     public Response updateDadosCliente(ClienteUpdateDadosClienteDTO clienteUpdateDadosClienteDTO) {
-        Usuario u = usuarioRepository.findByLogin(jsonWebToken.getSubject());
+        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
         try {
             LOG.info("Requisição Cliente.update()");
             Cliente cliente = repository.findById(clienteUpdateDadosClienteDTO.id());
@@ -185,7 +185,7 @@ public class ClienteServiceImpl implements ClienteService {
 
     @Override
     public Response updateEndereco(ClienteUpdateEnderecoDTO clienteUpdateEnderecoDTO) {
-        Usuario u = usuarioRepository.findByLogin(jsonWebToken.getSubject());
+        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
         
         try {
             LOG.info("Requisição Cliente.update()");

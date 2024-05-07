@@ -164,9 +164,9 @@ INSERT INTO produto_categoria(produto_id, categorias_id) VALUES
 
 insert into usuario(ativo, id, nome, cpf, login, senha, empresa_usuario) VALUES
 (true, 1, 'kaio', '05562849259', 'kaio', 'cBz32i3RfBAIaqKNkTfdDZLrqih7z94jKllRAMiOW+U+b3GTkGAVUJhWsP6LK8KfVkkei6cekKUJpS2bU7VqvQ==', 1),
-(true, 2, 'kaio2', '05562849259', 'kaio2', 'cBz32i3RfBAIaqKNkTfdDZLrqih7z94jKllRAMiOW+U+b3GTkGAVUJhWsP6LK8KfVkkei6cekKUJpS2bU7VqvQ==', 2),
-(true, 3, 'kaio3', '05562849259', 'kaio3', 'cBz32i3RfBAIaqKNkTfdDZLrqih7z94jKllRAMiOW+U+b3GTkGAVUJhWsP6LK8KfVkkei6cekKUJpS2bU7VqvQ==', 3),
-(true, 4, 'joao', '05562849259', 'joao', 'cBz32i3RfBAIaqKNkTfdDZLrqih7z94jKllRAMiOW+U+b3GTkGAVUJhWsP6LK8KfVkkei6cekKUJpS2bU7VqvQ==', 4);
+(true, 2, 'kaio2', '00000000000', 'kaio2', 'cBz32i3RfBAIaqKNkTfdDZLrqih7z94jKllRAMiOW+U+b3GTkGAVUJhWsP6LK8KfVkkei6cekKUJpS2bU7VqvQ==', 2),
+(true, 3, 'kaio3', '11111111111', 'kaio3', 'cBz32i3RfBAIaqKNkTfdDZLrqih7z94jKllRAMiOW+U+b3GTkGAVUJhWsP6LK8KfVkkei6cekKUJpS2bU7VqvQ==', 3),
+(true, 4, 'joao', '22222222222', 'joao', 'cBz32i3RfBAIaqKNkTfdDZLrqih7z94jKllRAMiOW+U+b3GTkGAVUJhWsP6LK8KfVkkei6cekKUJpS2bU7VqvQ==', 4);
 
 insert into usuario_perfil (perfil, id_usuario) VALUES
 (1, 1),

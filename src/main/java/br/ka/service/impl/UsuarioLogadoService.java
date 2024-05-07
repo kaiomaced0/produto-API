@@ -18,10 +18,10 @@ public class UsuarioLogadoService {
 
     public UsuarioResponseDTO getPerfilUsuarioLogado() {
 
-        String login = jsonWebToken.getSubject();
+        String cpf = jsonWebToken.getSubject();
         try {
             Log.info("Requisição UsuarioLogado.getPerfilUsuarioLogado()");
-            return new UsuarioResponseDTO(usuarioRepository.findByLogin(login));
+            return new UsuarioResponseDTO(usuarioRepository.findByCpf(cpf));
         } catch (Exception e) {
             Log.error("Erro ao rodar Requisição UsuarioLogado.getPerfilUsuarioLogado()");
             return null;

@@ -43,7 +43,7 @@ public class CategoriaServiceImpl implements CategoriaService {
     @Override
     public Response getAll() {
         try {
-            Usuario u = usuarioRepository.findByLogin(jsonWebToken.getSubject());
+            Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
             LOG.info("Requisição Categoria.getAll()");
             return Response.ok(repository.listAll().stream().filter(c -> u.getEmpresa().equals(c.getEmpresa())).filter(EntityClass::getAtivo)
                     .map(CategoriaResponseDTO::new)
@@ -57,7 +57,7 @@ public class CategoriaServiceImpl implements CategoriaService {
 
     @Override
     public Response getId(Long id) {
-        Usuario u = usuarioRepository.findByLogin(jsonWebToken.getSubject());
+        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
         try {
             LOG.info("Requisição Categoria.getId()");
             Categoria categoria = repository.findById(id);
@@ -76,7 +76,7 @@ public class CategoriaServiceImpl implements CategoriaService {
     @Override
     @Transactional
     public Response insert(CategoriaDTO categoriaDTO) {
-        Usuario u = usuarioRepository.findByLogin(jsonWebToken.getSubject());
+        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
         try {
             LOG.info("Requisição Categoria.insert()");
             Categoria categoria = CategoriaDTO.criaCategoria(categoriaDTO);
@@ -92,7 +92,7 @@ public class CategoriaServiceImpl implements CategoriaService {
     @Override
     @Transactional
     public Response update(CategoriaUpdateDTO categoriaUpdateDTO) {
-        Usuario u = usuarioRepository.findByLogin(jsonWebToken.getSubject());
+        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
         try {
             LOG.info("Requisição Categoria.update()");
             Categoria categoria = repository.findById(categoriaUpdateDTO.id());
@@ -110,7 +110,7 @@ public class CategoriaServiceImpl implements CategoriaService {
     @Override
     @Transactional
     public Response delete(Long id) {
-        Usuario u = usuarioRepository.findByLogin(jsonWebToken.getSubject());
+        Usuario u = usuarioRepository.findByCpf(jsonWebToken.getSubject());
         try {
             LOG.info("Requisição Categoria.delete()");
             Categoria c = new Categoria();

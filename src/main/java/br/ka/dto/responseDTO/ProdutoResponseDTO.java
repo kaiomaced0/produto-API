@@ -12,8 +12,7 @@ public record ProdutoResponseDTO(
         Integer estoque,
         Double valor,
         Long idFornecedor,
-        Long idMarca,
-        List<CategoriaResponseDTO> categorias) {
+        Long idMarca) {
 
     public ProdutoResponseDTO(Produto produto) {
         this(produto.getId(),
@@ -22,9 +21,9 @@ public record ProdutoResponseDTO(
                 produto.getEstoque(),
                 produto.getValor(),
                 produto.getFornecedor().getId(),
-                produto.getMarca().getId(),
+                produto.getMarca().getId()
                 // A implementação abaixo assume que você tem um método ou uma maneira de obter uma lista de CategoriaResponseDTO a partir de uma lista de Categoria.
-                produto.getCategorias().stream().map(categoria -> new CategoriaResponseDTO(categoria)).collect(Collectors.toList())
+                //produto.getCategorias().stream().map(categoria -> new CategoriaResponseDTO(categoria)).collect(Collectors.toList())
         );
     }
 }
